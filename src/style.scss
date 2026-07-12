@@ -3,6 +3,13 @@
 	--rcc-gap: 24px;
 	--rcc-radius: 16px;
 	--rcc-ratio: 4/3;
+
+	// Fallback color/background when no Color support values are set in the
+	// editor. Both are real (non-inline) declarations on this same element,
+	// so if the block's Color panel is used, Gutenberg's inline style on this
+	// wrapper overrides them here; cards below then inherit whichever wins.
+	color: #1e1e1e;
+	background-color: #fff;
 }
 
 .wp-block-recipe-category-cards__grid {
@@ -38,7 +45,7 @@
 	height: 100%;
 	overflow: hidden;
 	border-radius: var(--rcc-radius, 16px);
-	background: #fff;
+	background-color: inherit;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	transition: transform 0.2s ease, box-shadow 0.2s ease;
 	text-decoration: none;
@@ -63,19 +70,19 @@
 
 .wp-block-recipe-category-cards__title {
 	margin: 0;
-	font-size: 1.1rem;
+	font-size: 1.15em;
 }
 
 .wp-block-recipe-category-cards__description {
 	flex: 1;
 	margin: 0;
-	color: #555;
-	font-size: 0.9rem;
+	font-size: 0.9em;
+	opacity: 0.75;
 }
 
 .wp-block-recipe-category-cards__count {
-	color: #777;
-	font-size: 0.85rem;
+	font-size: 0.85em;
+	opacity: 0.65;
 }
 
 .wp-block-recipe-category-cards__cta {
@@ -83,10 +90,13 @@
 	margin-top: auto;
 	font-weight: 600;
 	text-decoration: none;
-	color: #007cba;
+
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 .wp-block-recipe-category-cards__message {
-	color: #757575;
+	opacity: 0.65;
 	font-style: italic;
 }

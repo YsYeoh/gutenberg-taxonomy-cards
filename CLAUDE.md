@@ -34,6 +34,17 @@ This is a single Gutenberg block plugin built with `@wordpress/scripts` (webpack
 - **`src/view.js`** — the frontend hydration script (registered as `viewScript` in block.json, loaded automatically on pages containing the block, no PHP enqueue needed). Deliberately vanilla JS (no React) to keep the frontend payload small: on `DOMContentLoaded` it finds block wrapper elements by class, reads the `data-*` attributes, `fetch`es the REST endpoint, and builds card DOM nodes directly. Handles the three required states: missing image → `.is-placeholder` box, fetch failure → "Unable to load recipe categories.", empty result → "No recipe categories found."
 - **`src/style.scss`** (shared editor+frontend) / **`src/editor.scss`** (editor-only overrides, e.g. disabling hover animations in the block editor) — both imported from `src/index.js`. Grid/card layout is driven entirely by CSS custom properties (`--rcc-columns`, `--rcc-gap`, `--rcc-radius`, `--rcc-ratio`) set inline on the block wrapper by both `edit.js` and `save.js`, so layout logic lives once in CSS rather than being duplicated per-renderer.
 
+### Theme-aware styling (Color / Typography / Spacing supports)
+
+`src/block.json` declares native block `supports` for `color` (background, text, gradients), `typography` (fontSize, lineHeight, fontFamily), and `spacing` (margin, padding). This is what puts Color/Typography/Spacing panels in the Inspector — populated from the active theme's `theme.json` palette/font-size/spacing presets — instead of hand-rolled controls, so the block visually matches whatever theme it's installed into. `useBlockProps()` / `useBlockProps.save()` already merge these into the wrapper automatically; no extra plumbing needed in `edit.js`/`save.js`.
+
+The wrapper (`.wp-block-gutenberg-taxonomy-cards-recipe-category-cards`) declares real (non-inline) fallback `color`/`background-color` values in `style.scss`. When an editor picks a custom color, WordPress adds an inline style to that same wrapper element, which naturally overrides the stylesheet fallback. Card sub-elements pick this up two different ways:
+- Text color cascades for free — `color` is a natively-inherited CSS property, so none of `.__title`/`.__description`/`.__count`/`.__cta` declare their own `color`; they inherit whatever the wrapper resolves to (de-emphasized text uses `opacity`, not a separate hardcoded gray).
+- Background does **not** inherit by default in CSS, so `.__card` explicitly declares `background-color: inherit;` to pull the wrapper's resolved value.
+- Font sizes use `em` (relative to the inherited/overridden base), not `rem`, so title/description/count scale together when the block's font size changes.
+
+Don't reintroduce hardcoded hex colors on card sub-elements — it silently breaks this cascade and makes the block ignore the site's theme again.
+
 ### Build entry-point gotcha
 
 `wp-scripts`'s webpack config auto-detects JS entry points (beyond `index.js`) by scanning `block.json` files **inside the `src/` directory** for `file:` script references (`editorScript`, `script`, `viewScript`). If `block.json` sits at the plugin root instead, `view.js` silently never gets bundled as its own asset — the build "succeeds" but the frontend script is missing. That's why `block.json` lives at `src/block.json` (not the plugin root, despite `docs/guidance.md`'s sketch showing it there) with sibling-relative paths (`file:./index.js`, `file:./view.js`, etc.) that resolve correctly once wp-scripts copies `block.json` into `build/` next to the compiled assets.
