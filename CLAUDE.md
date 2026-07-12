@@ -5,9 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository Layout
 
 - `docs/guidance.md` — the original spec for the **Recipe Category Cards** Gutenberg block. Source of truth for scope, acceptance criteria, and design details not repeated below.
-- `recipe-category-cards/` — the plugin itself (all commands below run from this directory).
+- The plugin itself lives at the repo root (`recipe-category-cards.php`, `src/`, `package.json`) — there is no separate plugin subdirectory.
 
-## Commands (run inside `recipe-category-cards/`)
+## Commands (run from the repo root)
 
 ```
 npm install         # install devDependencies (@wordpress/scripts, typescript)
