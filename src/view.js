@@ -1,5 +1,5 @@
 /**
- * Frontend hydration for the Recipe Category Cards block.
+ * Frontend hydration for the Taxonomy Category Cards block.
  *
  * save.js only outputs a static placeholder (no PHP rendering, so no
  * server-fetched data can be baked in). This script fetches the live
@@ -7,9 +7,8 @@
  * so category name/image/count/description are always current.
  */
 
-const TAXONOMY_ENDPOINT = '/wp-json/wp/v2/recipe_category';
 const BLOCK_SELECTOR =
-	'.wp-block-gutenberg-taxonomy-cards-recipe-category-cards';
+	'.wp-block-gutenberg-taxonomy-cards-taxonomy-category-cards';
 
 function buildQuery( el ) {
 	const params = new URLSearchParams( {
@@ -29,46 +28,46 @@ function createCard( category, el ) {
 	const showCount = el.dataset.showCount !== 'false';
 
 	const card = document.createElement( 'div' );
-	card.className = 'wp-block-recipe-category-cards__card';
+	card.className = 'wp-block-taxonomy-category-cards__card';
 
 	if ( showImage ) {
 		const image = document.createElement( 'div' );
 		if ( category.z_taxonomy_image_url ) {
-			image.className = 'wp-block-recipe-category-cards__image';
+			image.className = 'wp-block-taxonomy-category-cards__image';
 			image.style.backgroundImage = `url(${ category.z_taxonomy_image_url })`;
 		} else {
 			image.className =
-				'wp-block-recipe-category-cards__image is-placeholder';
+				'wp-block-taxonomy-category-cards__image is-placeholder';
 		}
 		card.appendChild( image );
 	}
 
 	const content = document.createElement( 'div' );
-	content.className = 'wp-block-recipe-category-cards__content';
+	content.className = 'wp-block-taxonomy-category-cards__content';
 
 	const title = document.createElement( 'h3' );
-	title.className = 'wp-block-recipe-category-cards__title';
+	title.className = 'wp-block-taxonomy-category-cards__title';
 	title.textContent = category.name;
 	content.appendChild( title );
 
 	if ( showDescription && category.description ) {
 		const description = document.createElement( 'p' );
-		description.className = 'wp-block-recipe-category-cards__description';
+		description.className = 'wp-block-taxonomy-category-cards__description';
 		description.textContent = category.description;
 		content.appendChild( description );
 	}
 
 	if ( showCount ) {
 		const count = document.createElement( 'span' );
-		count.className = 'wp-block-recipe-category-cards__count';
-		count.textContent = `${ category.count } recipes`;
+		count.className = 'wp-block-taxonomy-category-cards__count';
+		count.textContent = `${ category.count } posts`;
 		content.appendChild( count );
 	}
 
 	const link = document.createElement( 'a' );
-	link.className = 'wp-block-recipe-category-cards__cta';
+	link.className = 'wp-block-taxonomy-category-cards__cta';
 	link.href = category.link;
-	link.textContent = 'Explore Recipes';
+	link.textContent = 'View archive';
 	content.appendChild( link );
 
 	card.appendChild( content );
@@ -78,15 +77,24 @@ function createCard( category, el ) {
 function renderMessage( el, message ) {
 	el.textContent = '';
 	const p = document.createElement( 'p' );
-	p.className = 'wp-block-recipe-category-cards__message';
+	p.className = 'wp-block-taxonomy-category-cards__message';
 	p.textContent = message;
 	el.appendChild( p );
 }
 
 async function hydrate( el ) {
+	const restBase = el.dataset.taxonomyRestBase;
+	if ( ! restBase ) {
+		renderMessage(
+			el,
+			'This block has no post type/taxonomy selected yet.'
+		);
+		return;
+	}
+
 	try {
 		const response = await fetch(
-			`${ TAXONOMY_ENDPOINT }?${ buildQuery( el ) }`
+			`/wp-json/wp/v2/${ restBase }?${ buildQuery( el ) }`
 		);
 		if ( ! response.ok ) {
 			throw new Error(
@@ -96,12 +104,15 @@ async function hydrate( el ) {
 		const categories = await response.json();
 
 		if ( ! Array.isArray( categories ) || categories.length === 0 ) {
-			renderMessage( el, 'No recipe categories found.' );
+			renderMessage(
+				el,
+				`No ${ el.dataset.taxonomyLabel || 'categories' } found.`
+			);
 			return;
 		}
 
 		const grid = document.createElement( 'div' );
-		grid.className = 'wp-block-recipe-category-cards__grid';
+		grid.className = 'wp-block-taxonomy-category-cards__grid';
 		categories.forEach( ( category ) =>
 			grid.appendChild( createCard( category, el ) )
 		);
@@ -109,7 +120,7 @@ async function hydrate( el ) {
 		el.textContent = '';
 		el.appendChild( grid );
 	} catch ( error ) {
-		renderMessage( el, 'Unable to load recipe categories.' );
+		renderMessage( el, 'Unable to load categories.' );
 	}
 }
 

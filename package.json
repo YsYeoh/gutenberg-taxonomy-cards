@@ -1,7 +1,7 @@
 {
   "name": "gutenberg-taxonomy-cards",
-  "version": "0.1.0",
-  "description": "Gutenberg block that dynamically displays Recipe Categories as responsive cards.",
+  "version": "0.2.0",
+  "description": "Gutenberg block that dynamically displays a taxonomy's terms as responsive cards.",
   "private": true,
   "license": "MIT",
   "scripts": {

@@ -2,6 +2,8 @@ import { useBlockProps } from '@wordpress/block-editor';
 
 export default function save( { attributes } ) {
 	const {
+		taxonomyRestBase,
+		taxonomyLabel,
 		columns,
 		gap,
 		showImage,
@@ -21,6 +23,8 @@ export default function save( { attributes } ) {
 			'--rcc-radius': `${ cardRadius }px`,
 			'--rcc-ratio': imageRatio,
 		},
+		'data-taxonomy-rest-base': taxonomyRestBase,
+		'data-taxonomy-label': taxonomyLabel,
 		'data-show-image': showImage,
 		'data-show-description': showDescription,
 		'data-show-count': showCount,

@@ -1,12 +1,12 @@
-.wp-block-gutenberg-taxonomy-cards-recipe-category-cards {
+.wp-block-gutenberg-taxonomy-cards-taxonomy-category-cards {
 
-	.wp-block-recipe-category-cards__card {
+	.wp-block-taxonomy-category-cards__card {
 
 		&:hover {
 			transform: none;
 			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-			.wp-block-recipe-category-cards__image {
+			.wp-block-taxonomy-category-cards__image {
 				transform: none;
 			}
 		}

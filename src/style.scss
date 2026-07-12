@@ -1,4 +1,4 @@
-.wp-block-gutenberg-taxonomy-cards-recipe-category-cards {
+.wp-block-gutenberg-taxonomy-cards-taxonomy-category-cards {
 	--rcc-columns: 4;
 	--rcc-gap: 24px;
 	--rcc-radius: 16px;
@@ -12,7 +12,7 @@
 	background-color: #fff;
 }
 
-.wp-block-recipe-category-cards__grid {
+.wp-block-taxonomy-category-cards__grid {
 	display: grid;
 	grid-template-columns: repeat(var(--rcc-columns, 4), 1fr);
 	gap: var(--rcc-gap, 24px);
@@ -26,7 +26,7 @@
 	}
 }
 
-.wp-block-recipe-category-cards__image {
+.wp-block-taxonomy-category-cards__image {
 	aspect-ratio: var(--rcc-ratio, 4 / 3);
 	background-size: cover;
 	background-position: center;
@@ -39,7 +39,7 @@
 	}
 }
 
-.wp-block-recipe-category-cards__card {
+.wp-block-taxonomy-category-cards__card {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
@@ -54,13 +54,13 @@
 		transform: translateY(-4px);
 		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 
-		.wp-block-recipe-category-cards__image {
+		.wp-block-taxonomy-category-cards__image {
 			transform: scale(1.05);
 		}
 	}
 }
 
-.wp-block-recipe-category-cards__content {
+.wp-block-taxonomy-category-cards__content {
 	display: flex;
 	flex: 1;
 	flex-direction: column;
@@ -68,24 +68,24 @@
 	padding: 16px;
 }
 
-.wp-block-recipe-category-cards__title {
+.wp-block-taxonomy-category-cards__title {
 	margin: 0;
 	font-size: 1.15em;
 }
 
-.wp-block-recipe-category-cards__description {
+.wp-block-taxonomy-category-cards__description {
 	flex: 1;
 	margin: 0;
 	font-size: 0.9em;
 	opacity: 0.75;
 }
 
-.wp-block-recipe-category-cards__count {
+.wp-block-taxonomy-category-cards__count {
 	font-size: 0.85em;
 	opacity: 0.65;
 }
 
-.wp-block-recipe-category-cards__cta {
+.wp-block-taxonomy-category-cards__cta {
 	display: inline-block;
 	margin-top: auto;
 	font-weight: 600;
@@ -96,7 +96,7 @@
 	}
 }
 
-.wp-block-recipe-category-cards__message {
+.wp-block-taxonomy-category-cards__message {
 	opacity: 0.65;
 	font-style: italic;
 }

@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Layout
 
-- `docs/guidance.md` — the original spec for the **Recipe Category Cards** Gutenberg block. Source of truth for scope, acceptance criteria, and design details not repeated below.
-- The plugin itself, **Gutenberg Taxonomy Cards**, lives at the repo root (`gutenberg-taxonomy-cards.php`, `src/`, `package.json`) — there is no separate plugin subdirectory. The plugin's display name/slug matches the repo name; the block it registers keeps the more specific name "Recipe Category Cards" since that's what it actually renders.
+- `docs/guidance.md` — the original spec, written for a recipe-specific "Recipe Category Cards" block. It's still the source of truth for card design details (4:3 image ratio, 16px radius, hover lift/scale, responsive column counts) and the no-PHP-rendering constraint, but the block has since been generalized beyond recipes — see below.
+- The plugin itself, **Gutenberg Taxonomy Cards**, lives at the repo root (`gutenberg-taxonomy-cards.php`, `src/`, `package.json`) — there is no separate plugin subdirectory. The block it registers is **Taxonomy Category Cards**: rather than being hardcoded to a `recipe_category` taxonomy, the editor lets the user pick any post type and any of that post type's taxonomies, so the same block works for categories, tags, or custom taxonomies on any post type.
 
 ## Commands (run from the repo root)
 
@@ -25,20 +25,20 @@ There is no test runner configured yet. `npm run build` is the closest thing to 
 
 ## Architecture
 
-This is a single Gutenberg block plugin built with `@wordpress/scripts` (webpack-based). The core constraint driving the whole design: **the block must not use PHP rendering** (it needs to run on WordPress.com Premium / other hosts where only plugin uploads are allowed, not arbitrary server code paths), and per the spec it must **dynamically** display categories — so data can't be baked in at save time either. Both the editor and the live frontend fetch categories from the REST API (`/wp-json/wp/v2/recipe_category`) independently, client-side:
+This is a single Gutenberg block plugin built with `@wordpress/scripts` (webpack-based). The core constraint driving the whole design: **the block must not use PHP rendering** (it needs to run on WordPress.com Premium / other hosts where only plugin uploads are allowed, not arbitrary server code paths), and per the spec it must **dynamically** display categories — so data can't be baked in at save time either. Both the editor and the live frontend fetch terms from the REST API independently, client-side, for whichever taxonomy the user picked:
 
 - **`gutenberg-taxonomy-cards.php`** — the only PHP in the plugin. It just calls `register_block_type( __DIR__ . '/build' )` on `init`. No `render_callback`.
-- **`src/block.json`** — block metadata + attributes (columns, gap, showImage, showDescription, showCount, hideEmpty, orderBy, order, cardRadius, imageRatio). Block type name is `gutenberg-taxonomy-cards/recipe-category-cards` (plugin-slug namespace + specific block name). Lives inside `src/`, not the plugin root — see the entry-point gotcha below.
-- **`src/edit.js`** — editor UI. Fetches taxonomy terms via `@wordpress/core-data`'s `getEntityRecords( 'taxonomy', 'recipe_category', query )` through `useSelect`, renders `InspectorControls` (Layout / Content / Query / Style panels) and a live preview grid using React.
-- **`src/save.js`** — emits only a static placeholder `<div>` with the block's settings serialized as `data-*` attributes (e.g. `data-order-by`, `data-hide-empty`). No category data is ever written into saved post content, so it can't go stale.
-- **`src/view.js`** — the frontend hydration script (registered as `viewScript` in block.json, loaded automatically on pages containing the block, no PHP enqueue needed). Deliberately vanilla JS (no React) to keep the frontend payload small: on `DOMContentLoaded` it finds block wrapper elements by class, reads the `data-*` attributes, `fetch`es the REST endpoint, and builds card DOM nodes directly. Handles the three required states: missing image → `.is-placeholder` box, fetch failure → "Unable to load recipe categories.", empty result → "No recipe categories found."
+- **`src/block.json`** — block metadata + attributes. `postType`/`taxonomy`/`taxonomyRestBase`/`taxonomyLabel` capture what the user picked in the Source panel (see below); the rest (columns, gap, showImage, showDescription, showCount, hideEmpty, orderBy, order, cardRadius, imageRatio) are unchanged from the original recipe-specific version. Block type name is `gutenberg-taxonomy-cards/taxonomy-category-cards` (plugin-slug namespace + specific block name). Lives inside `src/`, not the plugin root — see the entry-point gotcha below.
+- **`src/edit.js`** — editor UI. A **Source** panel lets the user pick a post type (`getPostTypes()`) then one of that post type's taxonomies (`getTaxonomies()` filtered by `taxonomyItem.types.includes(postType)`); picking a taxonomy also resolves and stores its `rest_base` (needed by `view.js`'s raw `fetch`, since `core-data` itself resolves taxonomy names to REST routes internally but a vanilla-JS frontend script has to do that itself) and human-readable label (used in `view.js`'s empty-state message). Once a taxonomy is chosen, fetches its terms via `@wordpress/core-data`'s `getEntityRecords( 'taxonomy', taxonomy, query )` through `useSelect`, and renders `InspectorControls` (Source / Layout / Content / Query / Style panels) plus a live preview grid using React.
+- **`src/save.js`** — emits only a static placeholder `<div>` with the block's settings serialized as `data-*` attributes (e.g. `data-taxonomy-rest-base`, `data-order-by`, `data-hide-empty`). No category data is ever written into saved post content, so it can't go stale.
+- **`src/view.js`** — the frontend hydration script (registered as `viewScript` in block.json, loaded automatically on pages containing the block, no PHP enqueue needed). Deliberately vanilla JS (no React) to keep the frontend payload small: on `DOMContentLoaded` it finds block wrapper elements by class, reads the `data-*` attributes (fetching `/wp-json/wp/v2/{data-taxonomy-rest-base}`, not a hardcoded endpoint), and builds card DOM nodes directly. Handles the required states: no taxonomy configured yet, missing image → `.is-placeholder` box, fetch failure → "Unable to load categories.", empty result → "No {taxonomy label} found."
 - **`src/style.scss`** (shared editor+frontend) / **`src/editor.scss`** (editor-only overrides, e.g. disabling hover animations in the block editor) — both imported from `src/index.js`. Grid/card layout is driven entirely by CSS custom properties (`--rcc-columns`, `--rcc-gap`, `--rcc-radius`, `--rcc-ratio`) set inline on the block wrapper by both `edit.js` and `save.js`, so layout logic lives once in CSS rather than being duplicated per-renderer.
 
 ### Theme-aware styling (Color / Typography / Spacing supports)
 
 `src/block.json` declares native block `supports` for `color` (background, text, gradients), `typography` (fontSize, lineHeight, fontFamily), and `spacing` (margin, padding). This is what puts Color/Typography/Spacing panels in the Inspector — populated from the active theme's `theme.json` palette/font-size/spacing presets — instead of hand-rolled controls, so the block visually matches whatever theme it's installed into. `useBlockProps()` / `useBlockProps.save()` already merge these into the wrapper automatically; no extra plumbing needed in `edit.js`/`save.js`.
 
-The wrapper (`.wp-block-gutenberg-taxonomy-cards-recipe-category-cards`) declares real (non-inline) fallback `color`/`background-color` values in `style.scss`. When an editor picks a custom color, WordPress adds an inline style to that same wrapper element, which naturally overrides the stylesheet fallback. Card sub-elements pick this up two different ways:
+The wrapper (`.wp-block-gutenberg-taxonomy-cards-taxonomy-category-cards`) declares real (non-inline) fallback `color`/`background-color` values in `style.scss`. When an editor picks a custom color, WordPress adds an inline style to that same wrapper element, which naturally overrides the stylesheet fallback. Card sub-elements pick this up two different ways:
 - Text color cascades for free — `color` is a natively-inherited CSS property, so none of `.__title`/`.__description`/`.__count`/`.__cta` declare their own `color`; they inherit whatever the wrapper resolves to (de-emphasized text uses `opacity`, not a separate hardcoded gray).
 - Background does **not** inherit by default in CSS, so `.__card` explicitly declares `background-color: inherit;` to pull the wrapper's resolved value.
 - Font sizes use `em` (relative to the inherited/overridden base), not `rem`, so title/description/count scale together when the block's font size changes.
@@ -51,23 +51,25 @@ Don't reintroduce hardcoded hex colors on card sub-elements — it silently brea
 
 ### Data shape
 
+Each REST API term looks like this. `z_taxonomy_image_url` is not a WordPress core field — it's specific to whatever plugin registered the taxonomy (originally observed on a recipe plugin's `recipe_category` taxonomy). Since the block now works with arbitrary taxonomies, this field is usually absent, and that's expected — both `edit.js` and `view.js` already treat it as optional and fall back to the placeholder image box.
+
 ```ts
-interface RecipeCategory {
+interface TaxonomyTerm {
     id: number;
     name: string;
     slug: string;
     description: string;
     count: number;
     link: string;
-    z_taxonomy_image_url: string;   // card image source; absent → placeholder
+    z_taxonomy_image_url?: string;   // card image source, if the taxonomy's plugin provides it; absent → placeholder
 }
 ```
 
 ## Constraints to preserve when changing this block
 
 - No `render_callback` / server-side rendering — keep data fetching client-side in both `edit.js` and `view.js`.
-- No hardcoded categories — always sourced live from the REST API.
+- No hardcoded taxonomy or post type — always sourced from the user's Source panel selection (`postType`/`taxonomy`/`taxonomyRestBase`/`taxonomyLabel` attributes), never assume `recipe_category` or any other specific taxonomy.
 - Keep `view.js` framework-free (no React/`@wordpress/element`) to keep the frontend bundle minimal; `edit.js` can freely use React since it only runs in the editor.
-- Preserve the three error/empty states listed above when touching `view.js` or `edit.js`'s fetch logic.
+- Preserve the required error/empty states (no taxonomy selected yet, fetch failure, empty result) when touching `view.js` or `edit.js`'s fetch logic.
 
 See `docs/guidance.md` for full card design details (4:3 image ratio, 16px radius, hover lift/scale, responsive column counts) and acceptance criteria.

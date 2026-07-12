@@ -1,14 +1,18 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "gutenberg-taxonomy-cards/recipe-category-cards",
-  "title": "Recipe Category Cards",
+  "name": "gutenberg-taxonomy-cards/taxonomy-category-cards",
+  "title": "Taxonomy Category Cards",
   "category": "widgets",
-  "description": "Displays Recipe Categories from the REST API as responsive cards.",
-  "keywords": [ "recipe", "category", "taxonomy", "cards" ],
-  "version": "0.1.0",
+  "description": "Displays terms from any taxonomy as responsive cards. Choose a post type and taxonomy in the block settings.",
+  "keywords": [ "taxonomy", "category", "cards", "post type", "terms" ],
+  "version": "0.2.0",
   "textdomain": "gutenberg-taxonomy-cards",
   "attributes": {
+    "postType": { "type": "string", "default": "" },
+    "taxonomy": { "type": "string", "default": "" },
+    "taxonomyRestBase": { "type": "string", "default": "" },
+    "taxonomyLabel": { "type": "string", "default": "" },
     "columns": { "type": "number", "default": 4 },
     "gap": { "type": "number", "default": 24 },
     "showImage": { "type": "boolean", "default": true },
@@ -22,6 +26,7 @@
   },
   "supports": {
     "html": false,
+    "align": [ "wide", "full" ],
     "color": {
       "background": true,
       "text": true,

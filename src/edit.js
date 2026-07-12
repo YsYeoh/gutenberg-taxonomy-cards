@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -9,10 +9,10 @@ import {
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
 
-const TAXONOMY = 'recipe_category';
-
 export default function Edit( { attributes, setAttributes } ) {
 	const {
+		postType,
+		taxonomy,
 		columns,
 		gap,
 		showImage,
@@ -25,15 +25,34 @@ export default function Edit( { attributes, setAttributes } ) {
 		imageRatio,
 	} = attributes;
 
+	const postTypes = useSelect(
+		( select ) =>
+			select( coreStore ).getPostTypes( { per_page: -1 } ) || [],
+		[]
+	).filter( ( postTypeItem ) => postTypeItem.viewable );
+
+	const taxonomies = useSelect(
+		( select ) =>
+			select( coreStore ).getTaxonomies( { per_page: -1 } ) || [],
+		[]
+	);
+
+	const availableTaxonomies = taxonomies.filter( ( taxonomyItem ) =>
+		taxonomyItem.types?.includes( postType )
+	);
+
 	const { categories, hasResolved } = useSelect(
 		( select ) => {
+			if ( ! taxonomy ) {
+				return { categories: [], hasResolved: true };
+			}
 			const query = {
 				per_page: 100,
 				orderby: orderBy,
 				order,
 				hide_empty: hideEmpty,
 			};
-			const selectorArgs = [ 'taxonomy', TAXONOMY, query ];
+			const selectorArgs = [ 'taxonomy', taxonomy, query ];
 			return {
 				categories: select( coreStore ).getEntityRecords(
 					...selectorArgs
@@ -44,8 +63,26 @@ export default function Edit( { attributes, setAttributes } ) {
 				),
 			};
 		},
-		[ orderBy, order, hideEmpty ]
+		[ taxonomy, orderBy, order, hideEmpty ]
 	);
+
+	const handlePostTypeChange = ( value ) => {
+		setAttributes( {
+			postType: value,
+			taxonomy: '',
+			taxonomyRestBase: '',
+			taxonomyLabel: '',
+		} );
+	};
+
+	const handleTaxonomyChange = ( value ) => {
+		const taxonomyItem = taxonomies.find( ( item ) => item.slug === value );
+		setAttributes( {
+			taxonomy: value,
+			taxonomyRestBase: taxonomyItem?.rest_base || value,
+			taxonomyLabel: taxonomyItem?.name || value,
+		} );
+	};
 
 	const blockProps = useBlockProps( {
 		style: {
@@ -59,6 +96,45 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<InspectorControls>
+				<PanelBody title={ __( 'Source', 'gutenberg-taxonomy-cards' ) }>
+					<SelectControl
+						label={ __( 'Post type', 'gutenberg-taxonomy-cards' ) }
+						value={ postType }
+						options={ [
+							{
+								label: __(
+									'Select a post type…',
+									'gutenberg-taxonomy-cards'
+								),
+								value: '',
+							},
+							...postTypes.map( ( postTypeItem ) => ( {
+								label: postTypeItem.name,
+								value: postTypeItem.slug,
+							} ) ),
+						] }
+						onChange={ handlePostTypeChange }
+					/>
+					<SelectControl
+						label={ __( 'Taxonomy', 'gutenberg-taxonomy-cards' ) }
+						value={ taxonomy }
+						disabled={ ! postType }
+						options={ [
+							{
+								label: __(
+									'Select a taxonomy…',
+									'gutenberg-taxonomy-cards'
+								),
+								value: '',
+							},
+							...availableTaxonomies.map( ( taxonomyItem ) => ( {
+								label: taxonomyItem.name,
+								value: taxonomyItem.slug,
+							} ) ),
+						] }
+						onChange={ handleTaxonomyChange }
+					/>
+				</PanelBody>
 				<PanelBody title={ __( 'Layout', 'gutenberg-taxonomy-cards' ) }>
 					<RangeControl
 						label={ __( 'Columns', 'gutenberg-taxonomy-cards' ) }
@@ -101,7 +177,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					/>
 					<ToggleControl
 						label={ __(
-							'Show recipe count',
+							'Show item count',
 							'gutenberg-taxonomy-cards'
 						) }
 						checked={ showCount }
@@ -126,7 +202,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						value={ orderBy }
 						options={ [
 							{ label: __( 'Name' ), value: 'name' },
-							{ label: __( 'Recipe count' ), value: 'count' },
+							{ label: __( 'Item count' ), value: 'count' },
 							{ label: __( 'ID' ), value: 'id' },
 						] }
 						onChange={ ( value ) =>
@@ -176,35 +252,43 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				{ ! hasResolved && (
+				{ ! taxonomy && (
 					<p>
 						{ __(
-							'Loading recipe categories…',
+							'Select a post type and taxonomy in the block settings sidebar to display category cards.',
 							'gutenberg-taxonomy-cards'
 						) }
 					</p>
 				) }
-				{ hasResolved && ! categories?.length && (
+				{ taxonomy && ! hasResolved && (
 					<p>
 						{ __(
-							'No recipe categories found.',
+							'Loading categories…',
 							'gutenberg-taxonomy-cards'
 						) }
 					</p>
 				) }
-				{ hasResolved && !! categories?.length && (
-					<div className="wp-block-recipe-category-cards__grid">
+				{ taxonomy && hasResolved && ! categories?.length && (
+					<p>
+						{ __(
+							'No categories found.',
+							'gutenberg-taxonomy-cards'
+						) }
+					</p>
+				) }
+				{ taxonomy && hasResolved && !! categories?.length && (
+					<div className="wp-block-taxonomy-category-cards__grid">
 						{ categories.map( ( category ) => (
 							<div
-								className="wp-block-recipe-category-cards__card"
+								className="wp-block-taxonomy-category-cards__card"
 								key={ category.id }
 							>
 								{ showImage && (
 									<div
 										className={
 											category.z_taxonomy_image_url
-												? 'wp-block-recipe-category-cards__image'
-												: 'wp-block-recipe-category-cards__image is-placeholder'
+												? 'wp-block-taxonomy-category-cards__image'
+												: 'wp-block-taxonomy-category-cards__image is-placeholder'
 										}
 										style={
 											category.z_taxonomy_image_url
@@ -215,28 +299,31 @@ export default function Edit( { attributes, setAttributes } ) {
 										}
 									/>
 								) }
-								<div className="wp-block-recipe-category-cards__content">
-									<h3 className="wp-block-recipe-category-cards__title">
+								<div className="wp-block-taxonomy-category-cards__content">
+									<h3 className="wp-block-taxonomy-category-cards__title">
 										{ category.name }
 									</h3>
 									{ showDescription &&
 										category.description && (
-											<p className="wp-block-recipe-category-cards__description">
+											<p className="wp-block-taxonomy-category-cards__description">
 												{ category.description }
 											</p>
 										) }
 									{ showCount && (
-										<span className="wp-block-recipe-category-cards__count">
-											{ category.count }{ ' ' }
-											{ __(
-												'recipes',
-												'gutenberg-taxonomy-cards'
+										<span className="wp-block-taxonomy-category-cards__count">
+											{ sprintf(
+												/* translators: %d: number of posts in this category */
+												__(
+													'%d posts',
+													'gutenberg-taxonomy-cards'
+												),
+												category.count
 											) }
 										</span>
 									) }
-									<span className="wp-block-recipe-category-cards__cta">
+									<span className="wp-block-taxonomy-category-cards__cta">
 										{ __(
-											'Explore Recipes',
+											'View archive',
 											'gutenberg-taxonomy-cards'
 										) }
 									</span>
