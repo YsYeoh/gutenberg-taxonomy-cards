@@ -1,0 +1,20 @@
+{
+  "name": "recipe-category-cards",
+  "version": "0.1.0",
+  "description": "Gutenberg block that dynamically displays Recipe Categories as responsive cards.",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "lint:js": "wp-scripts lint-js",
+    "lint:css": "wp-scripts lint-style",
+    "format": "wp-scripts format",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^30.0.0",
+    "typescript": "5.9.3"
+  }
+}

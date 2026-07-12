@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "recipe-category-cards/recipe-category-cards",
+  "title": "Recipe Category Cards",
+  "category": "widgets",
+  "description": "Displays Recipe Categories from the REST API as responsive cards.",
+  "keywords": [ "recipe", "category", "taxonomy", "cards" ],
+  "version": "0.1.0",
+  "textdomain": "recipe-category-cards",
+  "attributes": {
+    "columns": { "type": "number", "default": 4 },
+    "gap": { "type": "number", "default": 24 },
+    "showImage": { "type": "boolean", "default": true },
+    "showDescription": { "type": "boolean", "default": true },
+    "showCount": { "type": "boolean", "default": true },
+    "hideEmpty": { "type": "boolean", "default": false },
+    "orderBy": { "type": "string", "default": "name" },
+    "order": { "type": "string", "default": "asc" },
+    "cardRadius": { "type": "number", "default": 16 },
+    "imageRatio": { "type": "string", "default": "4/3" }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js"
+}

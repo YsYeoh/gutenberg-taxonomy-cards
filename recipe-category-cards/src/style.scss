@@ -1,0 +1,92 @@
+.wp-block-recipe-category-cards-recipe-category-cards {
+	--rcc-columns: 4;
+	--rcc-gap: 24px;
+	--rcc-radius: 16px;
+	--rcc-ratio: 4/3;
+}
+
+.wp-block-recipe-category-cards__grid {
+	display: grid;
+	grid-template-columns: repeat(var(--rcc-columns, 4), 1fr);
+	gap: var(--rcc-gap, 24px);
+
+	@media ( max-width: 782px ) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@media ( max-width: 480px ) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.wp-block-recipe-category-cards__image {
+	aspect-ratio: var(--rcc-ratio, 4 / 3);
+	background-size: cover;
+	background-position: center;
+	border-radius: var(--rcc-radius, 16px) var(--rcc-radius, 16px) 0 0;
+	transition: transform 0.3s ease;
+	overflow: hidden;
+
+	&.is-placeholder {
+		background-color: #e2e2e2;
+	}
+}
+
+.wp-block-recipe-category-cards__card {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+	border-radius: var(--rcc-radius, 16px);
+	background: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	text-decoration: none;
+
+	&:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+		.wp-block-recipe-category-cards__image {
+			transform: scale(1.05);
+		}
+	}
+}
+
+.wp-block-recipe-category-cards__content {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 8px;
+	padding: 16px;
+}
+
+.wp-block-recipe-category-cards__title {
+	margin: 0;
+	font-size: 1.1rem;
+}
+
+.wp-block-recipe-category-cards__description {
+	flex: 1;
+	margin: 0;
+	color: #555;
+	font-size: 0.9rem;
+}
+
+.wp-block-recipe-category-cards__count {
+	color: #777;
+	font-size: 0.85rem;
+}
+
+.wp-block-recipe-category-cards__cta {
+	display: inline-block;
+	margin-top: auto;
+	font-weight: 600;
+	text-decoration: none;
+	color: #007cba;
+}
+
+.wp-block-recipe-category-cards__message {
+	color: #757575;
+	font-style: italic;
+}
