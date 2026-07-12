@@ -1,13 +1,13 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "recipe-category-cards/recipe-category-cards",
+  "name": "gutenberg-taxonomy-cards/recipe-category-cards",
   "title": "Recipe Category Cards",
   "category": "widgets",
   "description": "Displays Recipe Categories from the REST API as responsive cards.",
   "keywords": [ "recipe", "category", "taxonomy", "cards" ],
   "version": "0.1.0",
-  "textdomain": "recipe-category-cards",
+  "textdomain": "gutenberg-taxonomy-cards",
   "attributes": {
     "columns": { "type": "number", "default": 4 },
     "gap": { "type": "number", "default": 24 },

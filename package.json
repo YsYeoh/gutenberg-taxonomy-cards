@@ -1,5 +1,5 @@
 {
-  "name": "recipe-category-cards",
+  "name": "gutenberg-taxonomy-cards",
   "version": "0.1.0",
   "description": "Gutenberg block that dynamically displays Recipe Categories as responsive cards.",
   "private": true,

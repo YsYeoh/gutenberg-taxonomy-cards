@@ -8,7 +8,8 @@
  */
 
 const TAXONOMY_ENDPOINT = '/wp-json/wp/v2/recipe_category';
-const BLOCK_SELECTOR = '.wp-block-recipe-category-cards-recipe-category-cards';
+const BLOCK_SELECTOR =
+	'.wp-block-gutenberg-taxonomy-cards-recipe-category-cards';
 
 function buildQuery( el ) {
 	const params = new URLSearchParams( {

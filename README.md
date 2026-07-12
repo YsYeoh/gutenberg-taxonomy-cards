@@ -1,8 +1,8 @@
 # gutenberg-taxonomy-cards
 
-A WordPress Gutenberg block, **Recipe Category Cards**, that dynamically displays Recipe Categories from the WordPress REST API as responsive cards — no PHP rendering required, so it works on hosts that only allow plugin uploads (e.g. WordPress.com Premium).
+**Gutenberg Taxonomy Cards** is a WordPress plugin containing a Recipe Category Cards block that dynamically displays Recipe Categories from the WordPress REST API as responsive cards — no PHP rendering required, so it works on hosts that only allow plugin uploads (e.g. WordPress.com Premium).
 
-See [`docs/guidance.md`](docs/guidance.md) for the full spec. The plugin source is at the repo root (`recipe-category-cards.php`, `src/`).
+See [`docs/guidance.md`](docs/guidance.md) for the full spec. The plugin source is at the repo root (`gutenberg-taxonomy-cards.php`, `src/`).
 
 ## Development
 

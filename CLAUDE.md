@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository Layout
 
 - `docs/guidance.md` — the original spec for the **Recipe Category Cards** Gutenberg block. Source of truth for scope, acceptance criteria, and design details not repeated below.
-- The plugin itself lives at the repo root (`recipe-category-cards.php`, `src/`, `package.json`) — there is no separate plugin subdirectory.
+- The plugin itself, **Gutenberg Taxonomy Cards**, lives at the repo root (`gutenberg-taxonomy-cards.php`, `src/`, `package.json`) — there is no separate plugin subdirectory. The plugin's display name/slug matches the repo name; the block it registers keeps the more specific name "Recipe Category Cards" since that's what it actually renders.
 
 ## Commands (run from the repo root)
 
@@ -27,8 +27,8 @@ There is no test runner configured yet. `npm run build` is the closest thing to 
 
 This is a single Gutenberg block plugin built with `@wordpress/scripts` (webpack-based). The core constraint driving the whole design: **the block must not use PHP rendering** (it needs to run on WordPress.com Premium / other hosts where only plugin uploads are allowed, not arbitrary server code paths), and per the spec it must **dynamically** display categories — so data can't be baked in at save time either. Both the editor and the live frontend fetch categories from the REST API (`/wp-json/wp/v2/recipe_category`) independently, client-side:
 
-- **`recipe-category-cards.php`** — the only PHP in the plugin. It just calls `register_block_type( __DIR__ . '/build' )` on `init`. No `render_callback`.
-- **`src/block.json`** — block metadata + attributes (columns, gap, showImage, showDescription, showCount, hideEmpty, orderBy, order, cardRadius, imageRatio). Lives inside `src/`, not the plugin root — see the entry-point gotcha below.
+- **`gutenberg-taxonomy-cards.php`** — the only PHP in the plugin. It just calls `register_block_type( __DIR__ . '/build' )` on `init`. No `render_callback`.
+- **`src/block.json`** — block metadata + attributes (columns, gap, showImage, showDescription, showCount, hideEmpty, orderBy, order, cardRadius, imageRatio). Block type name is `gutenberg-taxonomy-cards/recipe-category-cards` (plugin-slug namespace + specific block name). Lives inside `src/`, not the plugin root — see the entry-point gotcha below.
 - **`src/edit.js`** — editor UI. Fetches taxonomy terms via `@wordpress/core-data`'s `getEntityRecords( 'taxonomy', 'recipe_category', query )` through `useSelect`, renders `InspectorControls` (Layout / Content / Query / Style panels) and a live preview grid using React.
 - **`src/save.js`** — emits only a static placeholder `<div>` with the block's settings serialized as `data-*` attributes (e.g. `data-order-by`, `data-hide-empty`). No category data is ever written into saved post content, so it can't go stale.
 - **`src/view.js`** — the frontend hydration script (registered as `viewScript` in block.json, loaded automatically on pages containing the block, no PHP enqueue needed). Deliberately vanilla JS (no React) to keep the frontend payload small: on `DOMContentLoaded` it finds block wrapper elements by class, reads the `data-*` attributes, `fetch`es the REST endpoint, and builds card DOM nodes directly. Handles the three required states: missing image → `.is-placeholder` box, fetch failure → "Unable to load recipe categories.", empty result → "No recipe categories found."

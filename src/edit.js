@@ -59,9 +59,9 @@ export default function Edit( { attributes, setAttributes } ) {
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Layout', 'recipe-category-cards' ) }>
+				<PanelBody title={ __( 'Layout', 'gutenberg-taxonomy-cards' ) }>
 					<RangeControl
-						label={ __( 'Columns', 'recipe-category-cards' ) }
+						label={ __( 'Columns', 'gutenberg-taxonomy-cards' ) }
 						value={ columns }
 						onChange={ ( value ) =>
 							setAttributes( { columns: value } )
@@ -70,7 +70,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						max={ 4 }
 					/>
 					<RangeControl
-						label={ __( 'Gap (px)', 'recipe-category-cards' ) }
+						label={ __( 'Gap (px)', 'gutenberg-taxonomy-cards' ) }
 						value={ gap }
 						onChange={ ( value ) =>
 							setAttributes( { gap: value } )
@@ -79,9 +79,11 @@ export default function Edit( { attributes, setAttributes } ) {
 						max={ 64 }
 					/>
 				</PanelBody>
-				<PanelBody title={ __( 'Content', 'recipe-category-cards' ) }>
+				<PanelBody
+					title={ __( 'Content', 'gutenberg-taxonomy-cards' ) }
+				>
 					<ToggleControl
-						label={ __( 'Show image', 'recipe-category-cards' ) }
+						label={ __( 'Show image', 'gutenberg-taxonomy-cards' ) }
 						checked={ showImage }
 						onChange={ ( value ) =>
 							setAttributes( { showImage: value } )
@@ -90,7 +92,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					<ToggleControl
 						label={ __(
 							'Show description',
-							'recipe-category-cards'
+							'gutenberg-taxonomy-cards'
 						) }
 						checked={ showDescription }
 						onChange={ ( value ) =>
@@ -100,7 +102,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					<ToggleControl
 						label={ __(
 							'Show recipe count',
-							'recipe-category-cards'
+							'gutenberg-taxonomy-cards'
 						) }
 						checked={ showCount }
 						onChange={ ( value ) =>
@@ -108,11 +110,11 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 					/>
 				</PanelBody>
-				<PanelBody title={ __( 'Query', 'recipe-category-cards' ) }>
+				<PanelBody title={ __( 'Query', 'gutenberg-taxonomy-cards' ) }>
 					<ToggleControl
 						label={ __(
 							'Hide empty categories',
-							'recipe-category-cards'
+							'gutenberg-taxonomy-cards'
 						) }
 						checked={ hideEmpty }
 						onChange={ ( value ) =>
@@ -120,7 +122,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 					/>
 					<SelectControl
-						label={ __( 'Order by', 'recipe-category-cards' ) }
+						label={ __( 'Order by', 'gutenberg-taxonomy-cards' ) }
 						value={ orderBy }
 						options={ [
 							{ label: __( 'Name' ), value: 'name' },
@@ -132,7 +134,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 					/>
 					<SelectControl
-						label={ __( 'Order', 'recipe-category-cards' ) }
+						label={ __( 'Order', 'gutenberg-taxonomy-cards' ) }
 						value={ order }
 						options={ [
 							{ label: __( 'Ascending' ), value: 'asc' },
@@ -143,11 +145,11 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 					/>
 				</PanelBody>
-				<PanelBody title={ __( 'Style', 'recipe-category-cards' ) }>
+				<PanelBody title={ __( 'Style', 'gutenberg-taxonomy-cards' ) }>
 					<RangeControl
 						label={ __(
 							'Card corner radius (px)',
-							'recipe-category-cards'
+							'gutenberg-taxonomy-cards'
 						) }
 						value={ cardRadius }
 						onChange={ ( value ) =>
@@ -157,7 +159,10 @@ export default function Edit( { attributes, setAttributes } ) {
 						max={ 32 }
 					/>
 					<SelectControl
-						label={ __( 'Image ratio', 'recipe-category-cards' ) }
+						label={ __(
+							'Image ratio',
+							'gutenberg-taxonomy-cards'
+						) }
 						value={ imageRatio }
 						options={ [
 							{ label: '4:3', value: '4/3' },
@@ -175,7 +180,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					<p>
 						{ __(
 							'Loading recipe categories…',
-							'recipe-category-cards'
+							'gutenberg-taxonomy-cards'
 						) }
 					</p>
 				) }
@@ -183,7 +188,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					<p>
 						{ __(
 							'No recipe categories found.',
-							'recipe-category-cards'
+							'gutenberg-taxonomy-cards'
 						) }
 					</p>
 				) }
@@ -225,14 +230,14 @@ export default function Edit( { attributes, setAttributes } ) {
 											{ category.count }{ ' ' }
 											{ __(
 												'recipes',
-												'recipe-category-cards'
+												'gutenberg-taxonomy-cards'
 											) }
 										</span>
 									) }
 									<span className="wp-block-recipe-category-cards__cta">
 										{ __(
 											'Explore Recipes',
-											'recipe-category-cards'
+											'gutenberg-taxonomy-cards'
 										) }
 									</span>
 								</div>
