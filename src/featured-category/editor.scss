@@ -1,0 +1,6 @@
+@use "../shared/grid-card" as gtc;
+
+.wp-block-gutenberg-taxonomy-cards-featured-category {
+
+	@include gtc.editor-reset("wp-block-featured-category");
+}

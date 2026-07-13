@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutenberg-taxonomy-cards/featured-category",
+  "title": "Featured Category",
+  "category": "widgets",
+  "description": "Showcases one specific taxonomy term as a large callout card — image, name, description, item count.",
+  "keywords": [ "taxonomy", "category", "featured", "callout", "hero" ],
+  "version": "1.0.0",
+  "textdomain": "gutenberg-taxonomy-cards",
+  "attributes": {
+    "postType": { "type": "string", "default": "" },
+    "taxonomy": { "type": "string", "default": "" },
+    "taxonomyRestBase": { "type": "string", "default": "" },
+    "term": { "type": "number", "default": 0 },
+    "layout": { "type": "string", "default": "stacked" },
+    "showImage": { "type": "boolean", "default": true },
+    "showDescription": { "type": "boolean", "default": true },
+    "showCount": { "type": "boolean", "default": true },
+    "showCta": { "type": "boolean", "default": false },
+    "cardRadius": { "type": "number", "default": 16 },
+    "imageRatio": { "type": "string", "default": "4/3" },
+    "imageFit": { "type": "string", "default": "cover" },
+    "hoverAnimation": { "type": "string", "default": "lift" },
+    "borderWidth": { "type": "number", "default": 0 },
+    "borderStyle": { "type": "string", "default": "solid" },
+    "borderColor": { "type": "string", "default": "" },
+    "cardBackgroundColor": { "type": "string", "default": "" },
+    "titleFontSize": { "type": "number", "default": 0 },
+    "titleColor": { "type": "string", "default": "" },
+    "descriptionFontSize": { "type": "number", "default": 0 },
+    "descriptionColor": { "type": "string", "default": "" },
+    "countFontSize": { "type": "number", "default": 0 },
+    "countColor": { "type": "string", "default": "" }
+  },
+  "supports": {
+    "html": false,
+    "align": [ "wide", "full" ],
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontFamily": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js"
+}
