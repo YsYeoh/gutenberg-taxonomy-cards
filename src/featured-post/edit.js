@@ -31,6 +31,7 @@ function formatDate( dateString ) {
 export default function Edit( { attributes, setAttributes } ) {
 	const {
 		postType,
+		postSelectionMode,
 		post,
 		layout,
 		showImage,
@@ -64,7 +65,7 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const availablePosts = useSelect(
 		( select ) => {
-			if ( ! postType ) {
+			if ( ! postType || postSelectionMode !== 'manual' ) {
 				return [];
 			}
 			return (
@@ -75,12 +76,34 @@ export default function Edit( { attributes, setAttributes } ) {
 				} ) || []
 			);
 		},
-		[ postType ]
+		[ postType, postSelectionMode ]
 	);
 
 	const { featuredPost, hasResolved } = useSelect(
 		( select ) => {
-			if ( ! postType || ! post ) {
+			if ( ! postType ) {
+				return { featuredPost: null, hasResolved: true };
+			}
+			if ( postSelectionMode === 'latest' ) {
+				const query = {
+					per_page: 1,
+					orderby: 'date',
+					order: 'desc',
+					_embed: true,
+				};
+				const selectorArgs = [ 'postType', postType, query ];
+				const posts = select( coreStore ).getEntityRecords(
+					...selectorArgs
+				);
+				return {
+					featuredPost: posts?.[ 0 ] || null,
+					hasResolved: select( coreStore ).hasFinishedResolution(
+						'getEntityRecords',
+						selectorArgs
+					),
+				};
+			}
+			if ( ! post ) {
 				return { featuredPost: null, hasResolved: true };
 			}
 			const selectorArgs = [
@@ -99,7 +122,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				),
 			};
 		},
-		[ postType, post ]
+		[ postType, postSelectionMode, post ]
 	);
 
 	const handlePostTypeChange = ( value ) => {
@@ -109,6 +132,10 @@ export default function Edit( { attributes, setAttributes } ) {
 			postTypeRestBase: postTypeItem?.rest_base || value,
 			post: 0,
 		} );
+	};
+
+	const handlePostSelectionModeChange = ( value ) => {
+		setAttributes( { postSelectionMode: value, post: 0 } );
 	};
 
 	const blockProps = useBlockProps( {
@@ -122,6 +149,9 @@ export default function Edit( { attributes, setAttributes } ) {
 			'--rcc-card-bg': cardBackgroundColor || undefined,
 		},
 	} );
+
+	const isConfigured =
+		!! postType && ( postSelectionMode === 'latest' || !! post );
 
 	const metaParts = [];
 	if ( featuredPost ) {
@@ -165,6 +195,32 @@ export default function Edit( { attributes, setAttributes } ) {
 						onChange={ handlePostTypeChange }
 					/>
 					{ postType && (
+						<SelectControl
+							label={ __(
+								'Post selection',
+								'gutenberg-taxonomy-cards'
+							) }
+							value={ postSelectionMode }
+							options={ [
+								{
+									label: __(
+										'Always use the latest post',
+										'gutenberg-taxonomy-cards'
+									),
+									value: 'latest',
+								},
+								{
+									label: __(
+										'Choose a specific post',
+										'gutenberg-taxonomy-cards'
+									),
+									value: 'manual',
+								},
+							] }
+							onChange={ handlePostSelectionModeChange }
+						/>
+					) }
+					{ postType && postSelectionMode === 'manual' && (
 						<SelectControl
 							label={ __(
 								'Featured post',
@@ -494,23 +550,28 @@ export default function Edit( { attributes, setAttributes } ) {
 				</PanelBody>
 			</InspectorControls>
 			<div { ...blockProps }>
-				{ ! post && (
+				{ ! isConfigured && (
 					<p>
-						{ __(
-							'Select a post type and post in the block settings sidebar to feature a post.',
-							'gutenberg-taxonomy-cards'
-						) }
+						{ postSelectionMode === 'manual'
+							? __(
+									'Select a post type and post in the block settings sidebar to feature a post.',
+									'gutenberg-taxonomy-cards'
+							  )
+							: __(
+									'Select a post type in the block settings sidebar to feature the latest post.',
+									'gutenberg-taxonomy-cards'
+							  ) }
 					</p>
 				) }
-				{ !! post && ! hasResolved && (
+				{ isConfigured && ! hasResolved && (
 					<p>{ __( 'Loading post…', 'gutenberg-taxonomy-cards' ) }</p>
 				) }
-				{ !! post && hasResolved && ! featuredPost && (
+				{ isConfigured && hasResolved && ! featuredPost && (
 					<p>
 						{ __( 'Post not found.', 'gutenberg-taxonomy-cards' ) }
 					</p>
 				) }
-				{ !! post && hasResolved && !! featuredPost && (
+				{ isConfigured && hasResolved && !! featuredPost && (
 					<a
 						href={ featuredPost.link }
 						onClick={ ( event ) => event.preventDefault() }

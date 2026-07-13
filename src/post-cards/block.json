@@ -15,6 +15,7 @@
     "taxonomyRestBase": { "type": "string", "default": "" },
     "term": { "type": "number", "default": 0 },
     "perPage": { "type": "number", "default": 6 },
+    "offset": { "type": "number", "default": 0 },
     "columns": { "type": "number", "default": 3 },
     "gap": { "type": "number", "default": 24 },
     "showImage": { "type": "boolean", "default": true },

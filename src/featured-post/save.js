@@ -3,6 +3,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 export default function save( { attributes } ) {
 	const {
 		postTypeRestBase,
+		postSelectionMode,
 		post,
 		layout,
 		showImage,
@@ -37,6 +38,7 @@ export default function save( { attributes } ) {
 			'--rcc-card-bg': cardBackgroundColor || undefined,
 		},
 		'data-post-type-rest-base': postTypeRestBase,
+		'data-post-selection-mode': postSelectionMode,
 		'data-post': post || '',
 		'data-layout': layout,
 		'data-show-image': showImage,
