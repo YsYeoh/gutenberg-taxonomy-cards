@@ -4,15 +4,15 @@ Tags: gutenberg, block, taxonomy, posts, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
-Five blocks that dynamically display taxonomy terms, posts, and authors from the REST API as responsive cards, with no PHP rendering required.
+Six blocks that dynamically display taxonomy terms, posts, and authors from the REST API as responsive cards, with no PHP rendering required.
 
 == Description ==
 
-Gutenberg Taxonomy Cards adds five blocks to the block editor, all fetching data client-side (in both the editor and on the live frontend) rather than using PHP server-side rendering — so they work on hosts that only allow plugin uploads and don't permit custom server code, such as WordPress.com Premium.
+Gutenberg Taxonomy Cards adds six blocks to the block editor, all fetching data client-side (in both the editor and on the live frontend) rather than using PHP server-side rendering — so they work on hosts that only allow plugin uploads and don't permit custom server code, such as WordPress.com Premium.
 
 = Taxonomy Category Cards =
 
@@ -33,7 +33,17 @@ If a category has no image, a placeholder is shown. If the categories can't be l
 
 = Post Cards =
 
-A responsive grid of posts from any post type, optionally filtered to one taxonomy term (post type → taxonomy → term). Each card shows a featured image, title, excerpt, author, and date. Includes the same Layout/Style/Border & Card Background/Text Style richness as Taxonomy Category Cards, plus a "Number of posts" and Order by (Date/Title/Menu order) query control.
+A responsive grid of posts from any post type, optionally filtered to one taxonomy term (post type → taxonomy → term). Each card shows a featured image, title, excerpt, author, and date. Includes the same Layout/Style/Border & Card Background/Text Style richness as Taxonomy Category Cards, plus:
+
+* **Filter** — Source panel: post type, then optionally a taxonomy and term to narrow the results
+* **Sort** — Order by (Date/Title/Menu order) and Ascending/Descending; defaults to Date/Descending, i.e. most recent first
+* **Limit** — "Number of posts" (1–24)
+
+For example, to show the 3 most recent posts under your homepage: leave the taxonomy filter off, set "Number of posts" to 3, and leave Order by/Order at their defaults.
+
+= Featured Post =
+
+Showcases **one** specific post (post type → post) as a single large callout card, in a Stacked or Horizontal layout — featured image, title, excerpt, author, date. Good for a "must-read" highlight above your regular post list.
 
 = Featured Category =
 
@@ -54,7 +64,7 @@ This plugin does not create any taxonomies, post types, or users itself — ever
 1. In your WordPress admin, go to **Plugins → Add New → Upload Plugin**.
 2. Choose the plugin zip file and click **Install Now**.
 3. Click **Activate**.
-4. Edit any post or page, open the block inserter, and add any of: **Taxonomy Category Cards**, **Post Cards**, **Featured Category**, **Category Pills**, or **Author Cards**.
+4. Edit any post or page, open the block inserter, and add any of: **Taxonomy Category Cards**, **Post Cards**, **Featured Post**, **Featured Category**, **Category Pills**, or **Author Cards**.
 5. In the block's Source panel, pick a post type and (where applicable) a taxonomy or term.
 
 == Frequently Asked Questions ==
@@ -84,6 +94,10 @@ Yes, as long as your site already allows SVG uploads to the Media Library. WordP
 The WordPress REST API doesn't expose a post count field on user objects, and adding one would require a separate request per author. Each card still links to that author's archive, where the count is visible.
 
 == Changelog ==
+
+= 1.1.0 =
+* Added a Featured Post block: a single large callout card for one specific post.
+* Documented Post Cards' existing filter/sort/limit controls more clearly (Source panel's taxonomy/term filter, Query panel's Order by/Order/Number of posts).
 
 = 1.0.0 =
 * Added four new blocks alongside the original Taxonomy Category Cards: Post Cards, Featured Category, Category Pills, and Author Cards.

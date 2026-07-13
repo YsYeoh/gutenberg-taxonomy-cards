@@ -1,0 +1,25 @@
+@use "../shared/grid-card" as gtc;
+
+.wp-block-gutenberg-taxonomy-cards-featured-post {
+
+	@include gtc.wrapper-defaults;
+}
+
+@include gtc.grid-card("wp-block-featured-post");
+
+.wp-block-featured-post__card {
+
+	&.is-layout-horizontal {
+		flex-direction: row;
+
+		.wp-block-featured-post__image {
+			flex: 0 0 40%;
+			border-radius: var(--rcc-radius, 16px) 0 0 var(--rcc-radius, 16px);
+		}
+
+		.wp-block-featured-post__content {
+			flex: 1;
+			justify-content: center;
+		}
+	}
+}

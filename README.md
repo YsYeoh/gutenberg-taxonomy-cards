@@ -1,9 +1,10 @@
 # gutenberg-taxonomy-cards
 
-**Gutenberg Taxonomy Cards** is a WordPress plugin containing five blocks that dynamically display taxonomy terms, posts, and authors from the WordPress REST API as responsive cards — no PHP rendering required, so it works on hosts that only allow plugin uploads (e.g. WordPress.com Premium).
+**Gutenberg Taxonomy Cards** is a WordPress plugin containing six blocks that dynamically display taxonomy terms, posts, and authors from the WordPress REST API as responsive cards — no PHP rendering required, so it works on hosts that only allow plugin uploads (e.g. WordPress.com Premium).
 
 - **Taxonomy Category Cards** — a grid of all terms in a taxonomy you pick (image, name, description, count, icon badges, per-category overrides)
-- **Post Cards** — a grid of posts from any post type, optionally filtered to one taxonomy term (featured image, excerpt, author, date)
+- **Post Cards** — a grid of posts from any post type, optionally filtered to one taxonomy term (featured image, excerpt, author, date), with sort/limit/filter controls (e.g. 3 most recent posts)
+- **Featured Post** — a single large callout card for one specific post
 - **Featured Category** — a single large callout card for one specific term
 - **Category Pills** — a lightweight, non-card list of terms as pills or a plain list
 - **Author Cards** — a grid of site authors (avatar, bio, link to their archive)
