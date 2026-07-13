@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, category, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -22,9 +22,10 @@ Block settings, available in the editor sidebar when the block is selected:
 * **Layout** — number of columns (2–4), gap between cards
 * **Content** — show/hide image, description, item count, and an optional "View archive" text link inside the card (off by default, since the whole card is already clickable)
 * **Query** — hide empty categories, order by name/item count/ID, ascending or descending
-* **Style** — card corner radius, image aspect ratio, image fit (cover/contain)
+* **Style** — card corner radius, image aspect ratio, image fit (cover/contain), and hover animation (Lift/Zoom/Grow/Fade/None)
+* **Border** — card border width, style (solid/dashed/dotted), and color
 * **Text Style** — independent font size and color for the title, description, and item count
-* **Icons** — an optional small image/SVG badge per category (picked from the Media Library), shown at the bottom-left corner of its image
+* **Icons** — an optional small image/SVG badge per category (picked from the Media Library), placed in any of the four corners of its image
 * Standard WordPress **Color**, **Typography**, and **Spacing** panels — colors, font size/family/line-height, and margin/padding all pull from your active theme's design settings
 
 If a category has no image, a placeholder is shown. If the categories can't be loaded, the block shows "Unable to load categories." If there are no categories, it shows "No {taxonomy} found."
@@ -62,6 +63,11 @@ The chosen post type has no taxonomies registered with `show_in_rest` enabled, s
 Yes, as long as your site already allows SVG uploads to the Media Library. WordPress disables SVG uploads by default for security reasons; this plugin doesn't change that setting, so you'll need a plugin like Safe SVG (or a custom `upload_mimes` filter) if you haven't already enabled it.
 
 == Changelog ==
+
+= 0.5.0 =
+* Added a Border panel: card border width, style (solid/dashed/dotted), and color.
+* Added a Hover animation option (Lift/Zoom/Grow/Fade/None) in the Style panel.
+* Added an Icon position option (bottom-left/bottom-right/top-left/top-right) in the Icons panel.
 
 = 0.4.0 =
 * Category icons are now Media Library images/SVGs (picked via a media picker in the Icons panel) instead of typed emoji/text.

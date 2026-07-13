@@ -37,7 +37,9 @@ function createCard( category, el, icons ) {
 	const showCta = el.dataset.showCta === 'true';
 
 	const card = document.createElement( 'a' );
-	card.className = 'wp-block-taxonomy-category-cards__card';
+	card.className = `wp-block-taxonomy-category-cards__card is-animation-${
+		el.dataset.hoverAnimation || 'lift'
+	}`;
 	card.href = category.link;
 
 	if ( showImage ) {
@@ -52,7 +54,9 @@ function createCard( category, el, icons ) {
 		const icon = icons[ category.id ];
 		if ( icon?.url ) {
 			const iconBadge = document.createElement( 'img' );
-			iconBadge.className = 'wp-block-taxonomy-category-cards__icon';
+			iconBadge.className = `wp-block-taxonomy-category-cards__icon is-position-${
+				el.dataset.iconPosition || 'bottom-left'
+			}`;
 			iconBadge.src = icon.url;
 			iconBadge.alt = '';
 			image.appendChild( iconBadge );

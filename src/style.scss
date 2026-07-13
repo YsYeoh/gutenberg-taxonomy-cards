@@ -43,8 +43,6 @@
 
 .wp-block-taxonomy-category-cards__icon {
 	position: absolute;
-	bottom: 8px;
-	left: 8px;
 	width: 28px;
 	height: 28px;
 	padding: 4px;
@@ -53,6 +51,26 @@
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	object-fit: contain;
 	box-sizing: border-box;
+
+	&.is-position-bottom-left {
+		bottom: 8px;
+		left: 8px;
+	}
+
+	&.is-position-bottom-right {
+		bottom: 8px;
+		right: 8px;
+	}
+
+	&.is-position-top-left {
+		top: 8px;
+		left: 8px;
+	}
+
+	&.is-position-top-right {
+		top: 8px;
+		right: 8px;
+	}
 }
 
 .wp-block-taxonomy-category-cards__card {
@@ -61,18 +79,38 @@
 	height: 100%;
 	overflow: hidden;
 	border-radius: var(--rcc-radius, 16px);
+	border:
+		var(--rcc-border-width, 0) var(--rcc-border-style, solid)
+		var(--rcc-border-color, currentColor);
 	background-color: inherit;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 	text-decoration: none;
 
-	&:hover {
+	&.is-animation-lift:hover {
 		transform: translateY(-4px);
 		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 
 		.wp-block-taxonomy-category-cards__image {
 			transform: scale(1.05);
 		}
+	}
+
+	&.is-animation-zoom:hover {
+		transform: scale(1.03);
+
+		.wp-block-taxonomy-category-cards__image {
+			transform: scale(1.08);
+		}
+	}
+
+	&.is-animation-grow:hover {
+		transform: scale(1.02);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+	}
+
+	&.is-animation-fade:hover {
+		opacity: 0.85;
 	}
 }
 

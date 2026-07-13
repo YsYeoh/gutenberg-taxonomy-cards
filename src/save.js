@@ -23,6 +23,11 @@ export default function save( { attributes } ) {
 		countFontSize,
 		countColor,
 		categoryIcons,
+		borderWidth,
+		borderStyle,
+		borderColor,
+		hoverAnimation,
+		iconPosition,
 	} = attributes;
 
 	const blockProps = useBlockProps.save( {
@@ -32,6 +37,9 @@ export default function save( { attributes } ) {
 			'--rcc-radius': `${ cardRadius }px`,
 			'--rcc-ratio': imageRatio,
 			'--rcc-image-fit': imageFit,
+			'--rcc-border-width': `${ borderWidth }px`,
+			'--rcc-border-style': borderStyle,
+			'--rcc-border-color': borderColor || undefined,
 		},
 		'data-taxonomy-rest-base': taxonomyRestBase,
 		'data-taxonomy-label': taxonomyLabel,
@@ -49,6 +57,8 @@ export default function save( { attributes } ) {
 		'data-count-font-size': countFontSize || '',
 		'data-count-color': countColor,
 		'data-category-icons': JSON.stringify( categoryIcons || {} ),
+		'data-hover-animation': hoverAnimation,
+		'data-icon-position': iconPosition,
 	} );
 
 	// Markup is a static placeholder only. view.js fetches the live

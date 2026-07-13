@@ -2,9 +2,13 @@
 
 	.wp-block-taxonomy-category-cards__card {
 
-		&:hover {
+		&.is-animation-lift:hover,
+		&.is-animation-zoom:hover,
+		&.is-animation-grow:hover,
+		&.is-animation-fade:hover {
 			transform: none;
 			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			opacity: 1;
 
 			.wp-block-taxonomy-category-cards__image {
 				transform: none;

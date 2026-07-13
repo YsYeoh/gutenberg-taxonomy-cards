@@ -40,6 +40,11 @@ export default function Edit( { attributes, setAttributes } ) {
 		countFontSize,
 		countColor,
 		categoryIcons,
+		borderWidth,
+		borderStyle,
+		borderColor,
+		hoverAnimation,
+		iconPosition,
 	} = attributes;
 
 	const colors = useSetting( 'color.palette' ) || [];
@@ -125,6 +130,9 @@ export default function Edit( { attributes, setAttributes } ) {
 			'--rcc-radius': `${ cardRadius }px`,
 			'--rcc-ratio': imageRatio,
 			'--rcc-image-fit': imageFit,
+			'--rcc-border-width': `${ borderWidth }px`,
+			'--rcc-border-style': borderStyle,
+			'--rcc-border-color': borderColor || undefined,
 		},
 	} );
 
@@ -313,6 +321,63 @@ export default function Edit( { attributes, setAttributes } ) {
 							setAttributes( { imageFit: value } )
 						}
 					/>
+					<SelectControl
+						label={ __(
+							'Hover animation',
+							'gutenberg-taxonomy-cards'
+						) }
+						value={ hoverAnimation }
+						options={ [
+							{ label: __( 'Lift' ), value: 'lift' },
+							{ label: __( 'Zoom' ), value: 'zoom' },
+							{ label: __( 'Grow' ), value: 'grow' },
+							{ label: __( 'Fade' ), value: 'fade' },
+							{ label: __( 'None' ), value: 'none' },
+						] }
+						onChange={ ( value ) =>
+							setAttributes( { hoverAnimation: value } )
+						}
+					/>
+				</PanelBody>
+				<PanelBody
+					title={ __( 'Border', 'gutenberg-taxonomy-cards' ) }
+					initialOpen={ false }
+				>
+					<RangeControl
+						label={ __(
+							'Border width (px)',
+							'gutenberg-taxonomy-cards'
+						) }
+						value={ borderWidth }
+						onChange={ ( value ) =>
+							setAttributes( { borderWidth: value || 0 } )
+						}
+						min={ 0 }
+						max={ 10 }
+					/>
+					<SelectControl
+						label={ __(
+							'Border style',
+							'gutenberg-taxonomy-cards'
+						) }
+						value={ borderStyle }
+						options={ [
+							{ label: __( 'Solid' ), value: 'solid' },
+							{ label: __( 'Dashed' ), value: 'dashed' },
+							{ label: __( 'Dotted' ), value: 'dotted' },
+						] }
+						onChange={ ( value ) =>
+							setAttributes( { borderStyle: value } )
+						}
+					/>
+					<ColorPalette
+						colors={ colors }
+						value={ borderColor }
+						onChange={ ( value ) =>
+							setAttributes( { borderColor: value || '' } )
+						}
+						clearable
+					/>
 				</PanelBody>
 				<PanelBody
 					title={ __( 'Text Style', 'gutenberg-taxonomy-cards' ) }
@@ -427,10 +492,38 @@ export default function Edit( { attributes, setAttributes } ) {
 					>
 						<p>
 							{ __(
-								'Optional image/SVG badge shown at the bottom-left corner of each card’s image.',
+								'Optional image/SVG badge shown on each card’s image.',
 								'gutenberg-taxonomy-cards'
 							) }
 						</p>
+						<SelectControl
+							label={ __(
+								'Icon position',
+								'gutenberg-taxonomy-cards'
+							) }
+							value={ iconPosition }
+							options={ [
+								{
+									label: __( 'Bottom left' ),
+									value: 'bottom-left',
+								},
+								{
+									label: __( 'Bottom right' ),
+									value: 'bottom-right',
+								},
+								{
+									label: __( 'Top left' ),
+									value: 'top-left',
+								},
+								{
+									label: __( 'Top right' ),
+									value: 'top-right',
+								},
+							] }
+							onChange={ ( value ) =>
+								setAttributes( { iconPosition: value } )
+							}
+						/>
 						{ categories.map( ( category ) => {
 							const icon = categoryIcons?.[ category.id ];
 							return (
@@ -534,7 +627,7 @@ export default function Edit( { attributes, setAttributes } ) {
 							<a
 								href={ category.link }
 								onClick={ ( event ) => event.preventDefault() }
-								className="wp-block-taxonomy-category-cards__card"
+								className={ `wp-block-taxonomy-category-cards__card is-animation-${ hoverAnimation }` }
 								key={ category.id }
 							>
 								{ showImage && (
@@ -555,7 +648,7 @@ export default function Edit( { attributes, setAttributes } ) {
 										{ categoryIcons?.[ category.id ]
 											?.url && (
 											<img
-												className="wp-block-taxonomy-category-cards__icon"
+												className={ `wp-block-taxonomy-category-cards__icon is-position-${ iconPosition }` }
 												src={
 													categoryIcons[ category.id ]
 														.url
