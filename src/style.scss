@@ -27,9 +27,11 @@
 }
 
 .wp-block-taxonomy-category-cards__image {
+	position: relative;
 	aspect-ratio: var(--rcc-ratio, 4 / 3);
-	background-size: cover;
+	background-size: var(--rcc-image-fit, cover);
 	background-position: center;
+	background-repeat: no-repeat;
 	border-radius: var(--rcc-radius, 16px) var(--rcc-radius, 16px) 0 0;
 	transition: transform 0.3s ease;
 	overflow: hidden;
@@ -37,6 +39,23 @@
 	&.is-placeholder {
 		background-color: #e2e2e2;
 	}
+}
+
+.wp-block-taxonomy-category-cards__icon {
+	position: absolute;
+	bottom: 8px;
+	left: 8px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 1.75em;
+	height: 1.75em;
+	padding: 0 0.25em;
+	border-radius: 999px;
+	background-color: rgba(0, 0, 0, 0.55);
+	color: #fff;
+	font-size: 1em;
+	line-height: 1;
 }
 
 .wp-block-taxonomy-category-cards__card {

@@ -22,13 +22,23 @@ function buildQuery( el ) {
 	return params.toString();
 }
 
-function createCard( category, el ) {
+function parseIcons( el ) {
+	try {
+		return JSON.parse( el.dataset.categoryIcons || '{}' );
+	} catch ( error ) {
+		return {};
+	}
+}
+
+function createCard( category, el, icons ) {
 	const showImage = el.dataset.showImage !== 'false';
 	const showDescription = el.dataset.showDescription !== 'false';
 	const showCount = el.dataset.showCount !== 'false';
+	const showCta = el.dataset.showCta === 'true';
 
-	const card = document.createElement( 'div' );
+	const card = document.createElement( 'a' );
 	card.className = 'wp-block-taxonomy-category-cards__card';
+	card.href = category.link;
 
 	if ( showImage ) {
 		const image = document.createElement( 'div' );
@@ -39,6 +49,13 @@ function createCard( category, el ) {
 			image.className =
 				'wp-block-taxonomy-category-cards__image is-placeholder';
 		}
+		const icon = icons[ category.id ];
+		if ( icon ) {
+			const iconBadge = document.createElement( 'span' );
+			iconBadge.className = 'wp-block-taxonomy-category-cards__icon';
+			iconBadge.textContent = icon;
+			image.appendChild( iconBadge );
+		}
 		card.appendChild( image );
 	}
 
@@ -48,12 +65,24 @@ function createCard( category, el ) {
 	const title = document.createElement( 'h3' );
 	title.className = 'wp-block-taxonomy-category-cards__title';
 	title.textContent = category.name;
+	if ( el.dataset.titleFontSize ) {
+		title.style.fontSize = `${ el.dataset.titleFontSize }px`;
+	}
+	if ( el.dataset.titleColor ) {
+		title.style.color = el.dataset.titleColor;
+	}
 	content.appendChild( title );
 
 	if ( showDescription && category.description ) {
 		const description = document.createElement( 'p' );
 		description.className = 'wp-block-taxonomy-category-cards__description';
 		description.textContent = category.description;
+		if ( el.dataset.descriptionFontSize ) {
+			description.style.fontSize = `${ el.dataset.descriptionFontSize }px`;
+		}
+		if ( el.dataset.descriptionColor ) {
+			description.style.color = el.dataset.descriptionColor;
+		}
 		content.appendChild( description );
 	}
 
@@ -61,14 +90,21 @@ function createCard( category, el ) {
 		const count = document.createElement( 'span' );
 		count.className = 'wp-block-taxonomy-category-cards__count';
 		count.textContent = `${ category.count } posts`;
+		if ( el.dataset.countFontSize ) {
+			count.style.fontSize = `${ el.dataset.countFontSize }px`;
+		}
+		if ( el.dataset.countColor ) {
+			count.style.color = el.dataset.countColor;
+		}
 		content.appendChild( count );
 	}
 
-	const link = document.createElement( 'a' );
-	link.className = 'wp-block-taxonomy-category-cards__cta';
-	link.href = category.link;
-	link.textContent = 'View archive';
-	content.appendChild( link );
+	if ( showCta ) {
+		const cta = document.createElement( 'span' );
+		cta.className = 'wp-block-taxonomy-category-cards__cta';
+		cta.textContent = 'View archive';
+		content.appendChild( cta );
+	}
 
 	card.appendChild( content );
 	return card;
@@ -111,10 +147,11 @@ async function hydrate( el ) {
 			return;
 		}
 
+		const icons = parseIcons( el );
 		const grid = document.createElement( 'div' );
 		grid.className = 'wp-block-taxonomy-category-cards__grid';
 		categories.forEach( ( category ) =>
-			grid.appendChild( createCard( category, el ) )
+			grid.appendChild( createCard( category, el, icons ) )
 		);
 
 		el.textContent = '';

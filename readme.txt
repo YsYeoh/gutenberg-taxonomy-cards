@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, category, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -12,7 +12,7 @@ Displays any taxonomy's terms from the REST API as responsive cards, with no PHP
 
 == Description ==
 
-Gutenberg Taxonomy Cards adds a **Taxonomy Category Cards** block to the block editor. Insert it into any post or page, choose a post type and one of its taxonomies in the block settings, and it dynamically fetches that taxonomy's terms from the WordPress REST API and displays them as a responsive grid of cards — image, name, description, item count, and a link to the term's archive.
+Gutenberg Taxonomy Cards adds a **Taxonomy Category Cards** block to the block editor. Insert it into any post or page, choose a post type and one of its taxonomies in the block settings, and it dynamically fetches that taxonomy's terms from the WordPress REST API and displays them as a responsive grid of cards — image, name, description, and item count. Each whole card links to the term's archive, so there's no separate click target to hunt for.
 
 Because the block fetches data client-side (in both the editor and on the live frontend) rather than using PHP server-side rendering, it works on hosts that only allow plugin uploads and don't permit custom server code, such as WordPress.com Premium.
 
@@ -20,9 +20,11 @@ Block settings, available in the editor sidebar when the block is selected:
 
 * **Source** — post type, then taxonomy (only taxonomies registered for the chosen post type are offered)
 * **Layout** — number of columns (2–4), gap between cards
-* **Content** — show/hide image, description, item count
+* **Content** — show/hide image, description, item count, and an optional "View archive" text link inside the card (off by default, since the whole card is already clickable)
 * **Query** — hide empty categories, order by name/item count/ID, ascending or descending
-* **Style** — card corner radius, image aspect ratio
+* **Style** — card corner radius, image aspect ratio, image fit (cover/contain)
+* **Text Style** — independent font size and color for the title, description, and item count
+* **Icons** — an optional small icon/emoji badge per category, shown at the bottom-left corner of its image
 * Standard WordPress **Color**, **Typography**, and **Spacing** panels — colors, font size/family/line-height, and margin/padding all pull from your active theme's design settings
 
 If a category has no image, a placeholder is shown. If the categories can't be loaded, the block shows "Unable to load categories." If there are no categories, it shows "No {taxonomy} found."
@@ -56,6 +58,12 @@ No. It only reads and displays terms from whichever taxonomy you select in the b
 The chosen post type has no taxonomies registered with `show_in_rest` enabled, so none are available to select.
 
 == Changelog ==
+
+= 0.3.0 =
+* Cards are now clickable in full, linking to the term archive; the text "View archive" link is optional and off by default.
+* Added independent Text Style controls (font size + color) for the title, description, and item count.
+* Added an Icons panel to set a small icon/emoji badge per category, shown at the bottom-left of its image.
+* Added an image fit option (cover/contain) alongside the existing image aspect ratio control.
 
 = 0.2.0 =
 * Generalized the block to any post type/taxonomy via a new Source panel, instead of being hardcoded to a single recipe taxonomy.

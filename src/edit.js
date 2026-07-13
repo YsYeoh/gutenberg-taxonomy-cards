@@ -1,10 +1,16 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	InspectorControls,
+	useSetting,
+} from '@wordpress/block-editor';
 import {
 	PanelBody,
 	RangeControl,
 	ToggleControl,
 	SelectControl,
+	TextControl,
+	ColorPalette,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
@@ -18,12 +24,23 @@ export default function Edit( { attributes, setAttributes } ) {
 		showImage,
 		showDescription,
 		showCount,
+		showCta,
 		hideEmpty,
 		orderBy,
 		order,
 		cardRadius,
 		imageRatio,
+		imageFit,
+		titleFontSize,
+		titleColor,
+		descriptionFontSize,
+		descriptionColor,
+		countFontSize,
+		countColor,
+		categoryIcons,
 	} = attributes;
+
+	const colors = useSetting( 'color.palette' ) || [];
 
 	const postTypes = useSelect(
 		( select ) =>
@@ -84,12 +101,19 @@ export default function Edit( { attributes, setAttributes } ) {
 		} );
 	};
 
+	const handleCategoryIconChange = ( categoryId, value ) => {
+		setAttributes( {
+			categoryIcons: { ...categoryIcons, [ categoryId ]: value },
+		} );
+	};
+
 	const blockProps = useBlockProps( {
 		style: {
 			'--rcc-columns': columns,
 			'--rcc-gap': `${ gap }px`,
 			'--rcc-radius': `${ cardRadius }px`,
 			'--rcc-ratio': imageRatio,
+			'--rcc-image-fit': imageFit,
 		},
 	} );
 
@@ -185,6 +209,20 @@ export default function Edit( { attributes, setAttributes } ) {
 							setAttributes( { showCount: value } )
 						}
 					/>
+					<ToggleControl
+						label={ __(
+							'Show "View archive" link',
+							'gutenberg-taxonomy-cards'
+						) }
+						help={ __(
+							'The whole card always links to the category archive; this adds a visible text link inside it too.',
+							'gutenberg-taxonomy-cards'
+						) }
+						checked={ showCta }
+						onChange={ ( value ) =>
+							setAttributes( { showCta: value } )
+						}
+					/>
 				</PanelBody>
 				<PanelBody title={ __( 'Query', 'gutenberg-taxonomy-cards' ) }>
 					<ToggleControl
@@ -249,7 +287,155 @@ export default function Edit( { attributes, setAttributes } ) {
 							setAttributes( { imageRatio: value } )
 						}
 					/>
+					<SelectControl
+						label={ __( 'Image fit', 'gutenberg-taxonomy-cards' ) }
+						help={ __(
+							'Cover crops the image to fill the frame; Contain shows the whole image, letterboxed if needed.',
+							'gutenberg-taxonomy-cards'
+						) }
+						value={ imageFit }
+						options={ [
+							{ label: __( 'Cover' ), value: 'cover' },
+							{ label: __( 'Contain' ), value: 'contain' },
+						] }
+						onChange={ ( value ) =>
+							setAttributes( { imageFit: value } )
+						}
+					/>
 				</PanelBody>
+				<PanelBody
+					title={ __( 'Text Style', 'gutenberg-taxonomy-cards' ) }
+					initialOpen={ false }
+				>
+					<p
+						style={ {
+							fontWeight: 600,
+							textTransform: 'uppercase',
+							margin: '8px 0 4px',
+						} }
+					>
+						{ __( 'Title', 'gutenberg-taxonomy-cards' ) }
+					</p>
+					<RangeControl
+						label={ __(
+							'Font size (px)',
+							'gutenberg-taxonomy-cards'
+						) }
+						value={ titleFontSize }
+						onChange={ ( value ) =>
+							setAttributes( { titleFontSize: value || 0 } )
+						}
+						min={ 0 }
+						max={ 40 }
+						help={ __(
+							'0 uses the theme default.',
+							'gutenberg-taxonomy-cards'
+						) }
+					/>
+					<ColorPalette
+						colors={ colors }
+						value={ titleColor }
+						onChange={ ( value ) =>
+							setAttributes( { titleColor: value || '' } )
+						}
+						clearable
+					/>
+					<p
+						style={ {
+							fontWeight: 600,
+							textTransform: 'uppercase',
+							margin: '8px 0 4px',
+						} }
+					>
+						{ __( 'Description', 'gutenberg-taxonomy-cards' ) }
+					</p>
+					<RangeControl
+						label={ __(
+							'Font size (px)',
+							'gutenberg-taxonomy-cards'
+						) }
+						value={ descriptionFontSize }
+						onChange={ ( value ) =>
+							setAttributes( {
+								descriptionFontSize: value || 0,
+							} )
+						}
+						min={ 0 }
+						max={ 32 }
+						help={ __(
+							'0 uses the theme default.',
+							'gutenberg-taxonomy-cards'
+						) }
+					/>
+					<ColorPalette
+						colors={ colors }
+						value={ descriptionColor }
+						onChange={ ( value ) =>
+							setAttributes( { descriptionColor: value || '' } )
+						}
+						clearable
+					/>
+					<p
+						style={ {
+							fontWeight: 600,
+							textTransform: 'uppercase',
+							margin: '8px 0 4px',
+						} }
+					>
+						{ __( 'Item count', 'gutenberg-taxonomy-cards' ) }
+					</p>
+					<RangeControl
+						label={ __(
+							'Font size (px)',
+							'gutenberg-taxonomy-cards'
+						) }
+						value={ countFontSize }
+						onChange={ ( value ) =>
+							setAttributes( { countFontSize: value || 0 } )
+						}
+						min={ 0 }
+						max={ 24 }
+						help={ __(
+							'0 uses the theme default.',
+							'gutenberg-taxonomy-cards'
+						) }
+					/>
+					<ColorPalette
+						colors={ colors }
+						value={ countColor }
+						onChange={ ( value ) =>
+							setAttributes( { countColor: value || '' } )
+						}
+						clearable
+					/>
+				</PanelBody>
+				{ taxonomy && !! categories?.length && (
+					<PanelBody
+						title={ __( 'Icons', 'gutenberg-taxonomy-cards' ) }
+						initialOpen={ false }
+					>
+						<p>
+							{ __(
+								'Optional badge shown at the bottom-left corner of each card’s image (emoji or short text).',
+								'gutenberg-taxonomy-cards'
+							) }
+						</p>
+						{ categories.map( ( category ) => (
+							<TextControl
+								key={ category.id }
+								label={ category.name }
+								value={ categoryIcons?.[ category.id ] || '' }
+								maxLength={ 4 }
+								onChange={ ( value ) =>
+									handleCategoryIconChange(
+										category.id,
+										value
+									)
+								}
+							/>
+						) ) }
+					</PanelBody>
+				) }
 			</InspectorControls>
 			<div { ...blockProps }>
 				{ ! taxonomy && (
@@ -279,7 +465,9 @@ export default function Edit( { attributes, setAttributes } ) {
 				{ taxonomy && hasResolved && !! categories?.length && (
 					<div className="wp-block-taxonomy-category-cards__grid">
 						{ categories.map( ( category ) => (
-							<div
+							<a
+								href={ category.link }
+								onClick={ ( event ) => event.preventDefault() }
 								className="wp-block-taxonomy-category-cards__card"
 								key={ category.id }
 							>
@@ -297,20 +485,53 @@ export default function Edit( { attributes, setAttributes } ) {
 												  }
 												: undefined
 										}
-									/>
+									>
+										{ categoryIcons?.[ category.id ] && (
+											<span className="wp-block-taxonomy-category-cards__icon">
+												{ categoryIcons[ category.id ] }
+											</span>
+										) }
+									</div>
 								) }
 								<div className="wp-block-taxonomy-category-cards__content">
-									<h3 className="wp-block-taxonomy-category-cards__title">
+									<h3
+										className="wp-block-taxonomy-category-cards__title"
+										style={ {
+											fontSize: titleFontSize
+												? `${ titleFontSize }px`
+												: undefined,
+											color: titleColor || undefined,
+										} }
+									>
 										{ category.name }
 									</h3>
 									{ showDescription &&
 										category.description && (
-											<p className="wp-block-taxonomy-category-cards__description">
+											<p
+												className="wp-block-taxonomy-category-cards__description"
+												style={ {
+													fontSize:
+														descriptionFontSize
+															? `${ descriptionFontSize }px`
+															: undefined,
+													color:
+														descriptionColor ||
+														undefined,
+												} }
+											>
 												{ category.description }
 											</p>
 										) }
 									{ showCount && (
-										<span className="wp-block-taxonomy-category-cards__count">
+										<span
+											className="wp-block-taxonomy-category-cards__count"
+											style={ {
+												fontSize: countFontSize
+													? `${ countFontSize }px`
+													: undefined,
+												color: countColor || undefined,
+											} }
+										>
 											{ sprintf(
 												/* translators: %d: number of posts in this category */
 												__(
@@ -321,14 +542,16 @@ export default function Edit( { attributes, setAttributes } ) {
 											) }
 										</span>
 									) }
-									<span className="wp-block-taxonomy-category-cards__cta">
-										{ __(
-											'View archive',
-											'gutenberg-taxonomy-cards'
-										) }
-									</span>
+									{ showCta && (
+										<span className="wp-block-taxonomy-category-cards__cta">
+											{ __(
+												'View archive',
+												'gutenberg-taxonomy-cards'
+											) }
+										</span>
+									) }
 								</div>
-							</div>
+							</a>
 						) ) }
 					</div>
 				) }

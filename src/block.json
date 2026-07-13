@@ -6,7 +6,7 @@
   "category": "widgets",
   "description": "Displays terms from any taxonomy as responsive cards. Choose a post type and taxonomy in the block settings.",
   "keywords": [ "taxonomy", "category", "cards", "post type", "terms" ],
-  "version": "0.2.0",
+  "version": "0.3.0",
   "textdomain": "gutenberg-taxonomy-cards",
   "attributes": {
     "postType": { "type": "string", "default": "" },
@@ -18,11 +18,20 @@
     "showImage": { "type": "boolean", "default": true },
     "showDescription": { "type": "boolean", "default": true },
     "showCount": { "type": "boolean", "default": true },
+    "showCta": { "type": "boolean", "default": false },
     "hideEmpty": { "type": "boolean", "default": false },
     "orderBy": { "type": "string", "default": "name" },
     "order": { "type": "string", "default": "asc" },
     "cardRadius": { "type": "number", "default": 16 },
-    "imageRatio": { "type": "string", "default": "4/3" }
+    "imageRatio": { "type": "string", "default": "4/3" },
+    "imageFit": { "type": "string", "default": "cover" },
+    "titleFontSize": { "type": "number", "default": 0 },
+    "titleColor": { "type": "string", "default": "" },
+    "descriptionFontSize": { "type": "number", "default": 0 },
+    "descriptionColor": { "type": "string", "default": "" },
+    "countFontSize": { "type": "number", "default": 0 },
+    "countColor": { "type": "string", "default": "" },
+    "categoryIcons": { "type": "object", "default": {} }
   },
   "supports": {
     "html": false,
