@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, category, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.6.0
+Stable tag: 0.7.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -23,7 +23,7 @@ Block settings, available in the editor sidebar when the block is selected:
 * **Content** — show/hide image, description, item count, and an optional "View archive" text link inside the card (off by default, since the whole card is already clickable)
 * **Query** — hide empty categories, order by name/item count/ID, ascending or descending
 * **Style** — card corner radius, image aspect ratio, image fit (cover/contain), and hover animation (Lift/Zoom/Grow/Fade/None)
-* **Border** — card border width, style (solid/dashed/dotted), and color
+* **Border & Card Background** — an independent card background color (separate from the container/grid background in the Color panel), plus card border width, style (solid/dashed/dotted), and color
 * **Text Style** — independent font size and color for the title, description, and item count
 * **Icons** — an optional small image/SVG badge per category (picked from the Media Library), placed in any of the four corners of its image
 * **Card Overrides** — per-category border color and hover animation, overriding the shared Border/Style settings for individual categories in the same grid
@@ -64,6 +64,9 @@ The chosen post type has no taxonomies registered with `show_in_rest` enabled, s
 Yes, as long as your site already allows SVG uploads to the Media Library. WordPress disables SVG uploads by default for security reasons; this plugin doesn't change that setting, so you'll need a plugin like Safe SVG (or a custom `upload_mimes` filter) if you haven't already enabled it.
 
 == Changelog ==
+
+= 0.7.0 =
+* The card's own background is now a separate color control from the container/grid background (previously the Color panel's background applied to both, so they couldn't differ).
 
 = 0.6.0 =
 * Added a Card Overrides panel: per-category border color and hover animation, so individual categories in the same grid can look/behave differently from the shared defaults.

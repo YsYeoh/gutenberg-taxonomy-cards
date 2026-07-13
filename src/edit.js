@@ -43,6 +43,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		borderWidth,
 		borderStyle,
 		borderColor,
+		cardBackgroundColor,
 		hoverAnimation,
 		iconPosition,
 		categoryBorderColors,
@@ -155,6 +156,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			'--rcc-border-width': `${ borderWidth }px`,
 			'--rcc-border-style': borderStyle,
 			'--rcc-border-color': borderColor || undefined,
+			'--rcc-card-bg': cardBackgroundColor || undefined,
 		},
 	} );
 
@@ -362,9 +364,46 @@ export default function Edit( { attributes, setAttributes } ) {
 					/>
 				</PanelBody>
 				<PanelBody
-					title={ __( 'Border', 'gutenberg-taxonomy-cards' ) }
+					title={ __(
+						'Border & Card Background',
+						'gutenberg-taxonomy-cards'
+					) }
 					initialOpen={ false }
 				>
+					<p
+						style={ {
+							fontWeight: 600,
+							textTransform: 'uppercase',
+							margin: '8px 0 4px',
+						} }
+					>
+						{ __( 'Card background', 'gutenberg-taxonomy-cards' ) }
+					</p>
+					<p style={ { margin: '0 0 8px' } }>
+						{ __(
+							'Independent from the container background set in the Color panel above — leave unset to keep matching it.',
+							'gutenberg-taxonomy-cards'
+						) }
+					</p>
+					<ColorPalette
+						colors={ colors }
+						value={ cardBackgroundColor }
+						onChange={ ( value ) =>
+							setAttributes( {
+								cardBackgroundColor: value || '',
+							} )
+						}
+						clearable
+					/>
+					<p
+						style={ {
+							fontWeight: 600,
+							textTransform: 'uppercase',
+							margin: '16px 0 4px',
+						} }
+					>
+						{ __( 'Border', 'gutenberg-taxonomy-cards' ) }
+					</p>
 					<RangeControl
 						label={ __(
 							'Border width (px)',

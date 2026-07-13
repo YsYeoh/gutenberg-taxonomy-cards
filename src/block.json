@@ -6,7 +6,7 @@
   "category": "widgets",
   "description": "Displays terms from any taxonomy as responsive cards. Choose a post type and taxonomy in the block settings.",
   "keywords": [ "taxonomy", "category", "cards", "post type", "terms" ],
-  "version": "0.6.0",
+  "version": "0.7.0",
   "textdomain": "gutenberg-taxonomy-cards",
   "attributes": {
     "postType": { "type": "string", "default": "" },
@@ -35,6 +35,7 @@
     "borderWidth": { "type": "number", "default": 0 },
     "borderStyle": { "type": "string", "default": "solid" },
     "borderColor": { "type": "string", "default": "" },
+    "cardBackgroundColor": { "type": "string", "default": "" },
     "hoverAnimation": { "type": "string", "default": "lift" },
     "iconPosition": { "type": "string", "default": "bottom-left" },
     "categoryBorderColors": { "type": "object", "default": {} },

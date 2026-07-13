@@ -1,6 +1,6 @@
 {
   "name": "gutenberg-taxonomy-cards",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Gutenberg block that dynamically displays a taxonomy's terms as responsive cards.",
   "private": true,
   "license": "MIT",

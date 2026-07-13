@@ -82,7 +82,7 @@
 	border:
 		var(--rcc-border-width, 0) var(--rcc-border-style, solid)
 		var(--rcc-border-color, currentColor);
-	background-color: inherit;
+	background-color: var(--rcc-card-bg, inherit);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 	text-decoration: none;
