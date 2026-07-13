@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutenberg-taxonomy-cards/category-pills",
+  "title": "Category Pills",
+  "category": "widgets",
+  "description": "Displays a taxonomy's terms as lightweight clickable pills or a plain list — no images, good for sidebars and filter bars.",
+  "keywords": [ "taxonomy", "category", "pills", "tags", "tag cloud", "list" ],
+  "version": "1.0.0",
+  "textdomain": "gutenberg-taxonomy-cards",
+  "attributes": {
+    "postType": { "type": "string", "default": "" },
+    "taxonomy": { "type": "string", "default": "" },
+    "taxonomyRestBase": { "type": "string", "default": "" },
+    "taxonomyLabel": { "type": "string", "default": "" },
+    "displayStyle": { "type": "string", "default": "pills" },
+    "showCount": { "type": "boolean", "default": true },
+    "hideEmpty": { "type": "boolean", "default": false },
+    "orderBy": { "type": "string", "default": "name" },
+    "order": { "type": "string", "default": "asc" },
+    "gap": { "type": "number", "default": 8 },
+    "fontSize": { "type": "number", "default": 0 },
+    "pillRadius": { "type": "number", "default": 999 },
+    "pillBackgroundColor": { "type": "string", "default": "" },
+    "pillTextColor": { "type": "string", "default": "" }
+  },
+  "supports": {
+    "html": false,
+    "align": [ "wide", "full" ],
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontFamily": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js"
+}

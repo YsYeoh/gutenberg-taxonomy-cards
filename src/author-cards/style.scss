@@ -1,0 +1,23 @@
+@use "../shared/grid-card" as gtc;
+
+.wp-block-gutenberg-taxonomy-cards-author-cards {
+
+	@include gtc.wrapper-defaults;
+}
+
+@include gtc.grid-card("wp-block-author-cards");
+
+.wp-block-author-cards__card {
+	align-items: center;
+	padding-top: 24px;
+	text-align: center;
+}
+
+.wp-block-author-cards__image {
+	width: 96px;
+	height: 96px;
+	margin: 0 auto;
+	border-radius: 50%;
+	aspect-ratio: 1;
+	flex: none;
+}

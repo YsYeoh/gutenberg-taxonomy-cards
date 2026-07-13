@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutenberg-taxonomy-cards/author-cards",
+  "title": "Author Cards",
+  "category": "widgets",
+  "description": "Displays site authors from the REST API as responsive profile cards — avatar, name, bio, link to their author archive.",
+  "keywords": [ "author", "team", "profile", "cards", "directory" ],
+  "version": "1.0.0",
+  "textdomain": "gutenberg-taxonomy-cards",
+  "attributes": {
+    "perPage": { "type": "number", "default": 12 },
+    "columns": { "type": "number", "default": 3 },
+    "gap": { "type": "number", "default": 24 },
+    "showAvatar": { "type": "boolean", "default": true },
+    "showBio": { "type": "boolean", "default": true },
+    "showCta": { "type": "boolean", "default": false },
+    "orderBy": { "type": "string", "default": "name" },
+    "order": { "type": "string", "default": "asc" },
+    "cardRadius": { "type": "number", "default": 16 },
+    "hoverAnimation": { "type": "string", "default": "lift" },
+    "borderWidth": { "type": "number", "default": 0 },
+    "borderStyle": { "type": "string", "default": "solid" },
+    "borderColor": { "type": "string", "default": "" },
+    "cardBackgroundColor": { "type": "string", "default": "" },
+    "titleFontSize": { "type": "number", "default": 0 },
+    "titleColor": { "type": "string", "default": "" },
+    "bioFontSize": { "type": "number", "default": 0 },
+    "bioColor": { "type": "string", "default": "" }
+  },
+  "supports": {
+    "html": false,
+    "align": [ "wide", "full" ],
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontFamily": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js"
+}
