@@ -1,0 +1,182 @@
+// Shared card/grid design system used by every block in this plugin.
+// Each block calls these mixins with its own BEM prefix (e.g.
+// "wp-block-post-cards") so class names stay unique per block while the
+// visual language (grid, card box, image, icon badge, text hierarchy,
+// hover animations) stays consistent and defined in exactly one place.
+
+@mixin wrapper-defaults {
+	--rcc-columns: 4;
+	--rcc-gap: 24px;
+	--rcc-radius: 16px;
+	--rcc-ratio: 4/3;
+
+	// Fallback color/background when no Color support values are set in the
+	// editor. Both are real (non-inline) declarations on this same element,
+	// so if the block's Color panel is used, Gutenberg's inline style on this
+	// wrapper overrides them here; cards below then inherit whichever wins.
+	color: #1e1e1e;
+	background-color: #fff;
+}
+
+@mixin grid-card($prefix) {
+	.#{$prefix}__grid {
+		display: grid;
+		grid-template-columns: repeat(var(--rcc-columns, 4), 1fr);
+		gap: var(--rcc-gap, 24px);
+
+		@media (max-width: 782px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@media (max-width: 480px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.#{$prefix}__image {
+		position: relative;
+		aspect-ratio: var(--rcc-ratio, 4 / 3);
+		background-size: var(--rcc-image-fit, cover);
+		background-position: center;
+		background-repeat: no-repeat;
+		border-radius: var(--rcc-radius, 16px) var(--rcc-radius, 16px) 0 0;
+		transition: transform 0.3s ease;
+		overflow: hidden;
+
+		&.is-placeholder {
+			background-color: #e2e2e2;
+		}
+	}
+
+	.#{$prefix}__icon {
+		position: absolute;
+		width: 28px;
+		height: 28px;
+		padding: 4px;
+		border-radius: 999px;
+		background-color: rgba(255, 255, 255, 0.9);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		object-fit: contain;
+		box-sizing: border-box;
+
+		&.is-position-bottom-left {
+			bottom: 8px;
+			left: 8px;
+		}
+
+		&.is-position-bottom-right {
+			bottom: 8px;
+			right: 8px;
+		}
+
+		&.is-position-top-left {
+			top: 8px;
+			left: 8px;
+		}
+
+		&.is-position-top-right {
+			top: 8px;
+			right: 8px;
+		}
+	}
+
+	.#{$prefix}__card {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		overflow: hidden;
+		border-radius: var(--rcc-radius, 16px);
+		border:
+			var(--rcc-border-width, 0) var(--rcc-border-style, solid)
+			var(--rcc-border-color, currentColor);
+		background-color: var(--rcc-card-bg, inherit);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+		text-decoration: none;
+
+		&.is-animation-lift:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+			.#{$prefix}__image {
+				transform: scale(1.05);
+			}
+		}
+
+		&.is-animation-zoom:hover {
+			transform: scale(1.03);
+
+			.#{$prefix}__image {
+				transform: scale(1.08);
+			}
+		}
+
+		&.is-animation-grow:hover {
+			transform: scale(1.02);
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+		}
+
+		&.is-animation-fade:hover {
+			opacity: 0.85;
+		}
+	}
+
+	.#{$prefix}__content {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: 8px;
+		padding: 16px;
+	}
+
+	.#{$prefix}__title {
+		margin: 0;
+		font-size: 1.15em;
+	}
+
+	.#{$prefix}__description {
+		flex: 1;
+		margin: 0;
+		font-size: 0.9em;
+		opacity: 0.75;
+	}
+
+	.#{$prefix}__count {
+		font-size: 0.85em;
+		opacity: 0.65;
+	}
+
+	.#{$prefix}__cta {
+		display: inline-block;
+		margin-top: auto;
+		font-weight: 600;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	.#{$prefix}__message {
+		opacity: 0.65;
+		font-style: italic;
+	}
+}
+
+@mixin editor-reset($prefix) {
+	.#{$prefix}__card {
+
+		&.is-animation-lift:hover,
+		&.is-animation-zoom:hover,
+		&.is-animation-grow:hover,
+		&.is-animation-fade:hover {
+			transform: none;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			opacity: 1;
+
+			.#{$prefix}__image {
+				transform: none;
+			}
+		}
+	}
+}
