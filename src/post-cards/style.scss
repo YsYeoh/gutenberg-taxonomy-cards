@@ -1,0 +1,8 @@
+@use "../shared/grid-card" as gtc;
+
+.wp-block-gutenberg-taxonomy-cards-post-cards {
+
+	@include gtc.wrapper-defaults;
+}
+
+@include gtc.grid-card("wp-block-post-cards");
