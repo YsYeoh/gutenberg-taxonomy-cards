@@ -121,13 +121,37 @@ function renderCard( post, el ) {
 
 async function hydrate( el ) {
 	const restBase = el.dataset.postTypeRestBase;
+	const mode = el.dataset.postSelectionMode || 'latest';
 	const postId = el.dataset.post;
-	if ( ! restBase || ! postId ) {
+
+	if ( ! restBase ) {
+		renderMessage( el, 'This block has no post type selected yet.' );
+		return;
+	}
+	if ( mode === 'manual' && ! postId ) {
 		renderMessage( el, 'This block has no post selected yet.' );
 		return;
 	}
 
 	try {
+		if ( mode === 'latest' ) {
+			const response = await fetch(
+				`/wp-json/wp/v2/${ restBase }?per_page=1&orderby=date&order=desc&_embed=1`
+			);
+			if ( ! response.ok ) {
+				throw new Error(
+					`Request failed with status ${ response.status }`
+				);
+			}
+			const posts = await response.json();
+			if ( ! Array.isArray( posts ) || posts.length === 0 ) {
+				renderMessage( el, 'No posts found.' );
+				return;
+			}
+			renderCard( posts[ 0 ], el );
+			return;
+		}
+
 		const response = await fetch(
 			`/wp-json/wp/v2/${ restBase }/${ postId }?_embed=1`
 		);

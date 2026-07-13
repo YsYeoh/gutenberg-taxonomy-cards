@@ -11,6 +11,7 @@
   "attributes": {
     "postType": { "type": "string", "default": "" },
     "postTypeRestBase": { "type": "string", "default": "" },
+    "postSelectionMode": { "type": "string", "default": "latest" },
     "post": { "type": "number", "default": 0 },
     "layout": { "type": "string", "default": "stacked" },
     "showImage": { "type": "boolean", "default": true },

@@ -33,6 +33,9 @@ function buildQuery( el ) {
 	if ( el.dataset.taxonomyRestBase && el.dataset.term ) {
 		params.set( el.dataset.taxonomyRestBase, el.dataset.term );
 	}
+	if ( el.dataset.offset ) {
+		params.set( 'offset', el.dataset.offset );
+	}
 	return params.toString();
 }
 

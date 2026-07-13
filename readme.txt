@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, posts, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -38,12 +38,15 @@ A responsive grid of posts from any post type, optionally filtered to one taxono
 * **Filter** — Source panel: post type, then optionally a taxonomy and term to narrow the results
 * **Sort** — Order by (Date/Title/Menu order) and Ascending/Descending; defaults to Date/Descending, i.e. most recent first
 * **Limit** — "Number of posts" (1–24)
+* **Offset** — skip the first N posts of the result set, e.g. to show posts 2–4 in a grid below a Featured Post block that already displays post 1
 
-For example, to show the 3 most recent posts under your homepage: leave the taxonomy filter off, set "Number of posts" to 3, and leave Order by/Order at their defaults.
+For example, to show the 3 most recent posts under your homepage: leave the taxonomy filter off, set "Number of posts" to 3, and leave Order by/Order at their defaults. To pair with Featured Post showing the latest post, set Offset to 1 so the grid starts with the second-most-recent post instead of repeating the featured one.
 
 = Featured Post =
 
-Showcases **one** specific post (post type → post) as a single large callout card, in a Stacked or Horizontal layout — featured image, title, excerpt, author, date. Good for a "must-read" highlight above your regular post list.
+Showcases **one** specific post as a single large callout card, in a Stacked or Horizontal layout — featured image, title, excerpt, author, date. Good for a "must-read" highlight above your regular post list.
+
+* **Post selection** — "Always use the latest post" (default; automatically stays current as new posts are published) or "Choose a specific post" (a manual picker, same as before)
 
 = Featured Category =
 
@@ -94,6 +97,10 @@ Yes, as long as your site already allows SVG uploads to the Media Library. WordP
 The WordPress REST API doesn't expose a post count field on user objects, and adding one would require a separate request per author. Each card still links to that author's archive, where the count is visible.
 
 == Changelog ==
+
+= 1.2.0 =
+* Featured Post: added a "Post selection" option to always show the site's latest post automatically, instead of always requiring a manually picked post.
+* Post Cards: added an Offset control to skip the first N posts in the result set, e.g. to show posts 2–4 in a grid below a Featured Post block that already displays post 1.
 
 = 1.1.0 =
 * Added a Featured Post block: a single large callout card for one specific post.

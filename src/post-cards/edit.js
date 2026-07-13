@@ -34,6 +34,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		taxonomy,
 		term,
 		perPage,
+		offset,
 		columns,
 		gap,
 		showImage,
@@ -101,6 +102,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			);
 			const query = {
 				per_page: perPage,
+				offset,
 				orderby: orderBy,
 				order,
 				_embed: true,
@@ -117,7 +119,16 @@ export default function Edit( { attributes, setAttributes } ) {
 				),
 			};
 		},
-		[ postType, taxonomy, term, perPage, orderBy, order, taxonomies ]
+		[
+			postType,
+			taxonomy,
+			term,
+			perPage,
+			offset,
+			orderBy,
+			order,
+			taxonomies,
+		]
 	);
 
 	const handlePostTypeChange = ( value ) => {
@@ -308,6 +319,19 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 						min={ 1 }
 						max={ 24 }
+					/>
+					<RangeControl
+						label={ __( 'Offset', 'gutenberg-taxonomy-cards' ) }
+						help={ __(
+							'Number of posts to skip from the start of the results, e.g. to avoid repeating a post already shown elsewhere.',
+							'gutenberg-taxonomy-cards'
+						) }
+						value={ offset }
+						onChange={ ( value ) =>
+							setAttributes( { offset: value || 0 } )
+						}
+						min={ 0 }
+						max={ 48 }
 					/>
 					<SelectControl
 						label={ __( 'Order by', 'gutenberg-taxonomy-cards' ) }
