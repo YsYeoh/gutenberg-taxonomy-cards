@@ -50,10 +50,11 @@ function createCard( category, el, icons ) {
 				'wp-block-taxonomy-category-cards__image is-placeholder';
 		}
 		const icon = icons[ category.id ];
-		if ( icon ) {
-			const iconBadge = document.createElement( 'span' );
+		if ( icon?.url ) {
+			const iconBadge = document.createElement( 'img' );
 			iconBadge.className = 'wp-block-taxonomy-category-cards__icon';
-			iconBadge.textContent = icon;
+			iconBadge.src = icon.url;
+			iconBadge.alt = '';
 			image.appendChild( iconBadge );
 		}
 		card.appendChild( image );

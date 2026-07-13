@@ -3,14 +3,16 @@ import {
 	useBlockProps,
 	InspectorControls,
 	useSetting,
+	MediaUpload,
+	MediaUploadCheck,
 } from '@wordpress/block-editor';
 import {
 	PanelBody,
 	RangeControl,
 	ToggleControl,
 	SelectControl,
-	TextControl,
 	ColorPalette,
+	Button,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
@@ -101,10 +103,19 @@ export default function Edit( { attributes, setAttributes } ) {
 		} );
 	};
 
-	const handleCategoryIconChange = ( categoryId, value ) => {
+	const handleCategoryIconSelect = ( categoryId, media ) => {
 		setAttributes( {
-			categoryIcons: { ...categoryIcons, [ categoryId ]: value },
+			categoryIcons: {
+				...categoryIcons,
+				[ categoryId ]: { id: media.id, url: media.url },
+			},
 		} );
+	};
+
+	const handleCategoryIconRemove = ( categoryId ) => {
+		const nextIcons = { ...categoryIcons };
+		delete nextIcons[ categoryId ];
+		setAttributes( { categoryIcons: nextIcons } );
 	};
 
 	const blockProps = useBlockProps( {
@@ -416,24 +427,79 @@ export default function Edit( { attributes, setAttributes } ) {
 					>
 						<p>
 							{ __(
-								'Optional badge shown at the bottom-left corner of each card’s image (emoji or short text).',
+								'Optional image/SVG badge shown at the bottom-left corner of each card’s image.',
 								'gutenberg-taxonomy-cards'
 							) }
 						</p>
-						{ categories.map( ( category ) => (
-							<TextControl
-								key={ category.id }
-								label={ category.name }
-								value={ categoryIcons?.[ category.id ] || '' }
-								maxLength={ 4 }
-								onChange={ ( value ) =>
-									handleCategoryIconChange(
-										category.id,
-										value
-									)
-								}
-							/>
-						) ) }
+						{ categories.map( ( category ) => {
+							const icon = categoryIcons?.[ category.id ];
+							return (
+								<div
+									key={ category.id }
+									style={ {
+										display: 'flex',
+										alignItems: 'center',
+										gap: '8px',
+										marginBottom: '8px',
+									} }
+								>
+									{ icon?.url && (
+										<img
+											src={ icon.url }
+											alt=""
+											width={ 24 }
+											height={ 24 }
+											style={ { objectFit: 'contain' } }
+										/>
+									) }
+									<MediaUploadCheck>
+										<MediaUpload
+											onSelect={ ( media ) =>
+												handleCategoryIconSelect(
+													category.id,
+													media
+												)
+											}
+											allowedTypes={ [ 'image' ] }
+											value={ icon?.id }
+											render={ ( { open } ) => (
+												<Button
+													onClick={ open }
+													variant="secondary"
+													size="small"
+												>
+													{ icon?.url
+														? category.name
+														: `${
+																category.name
+														  } — ${ __(
+																'Select icon',
+																'gutenberg-taxonomy-cards'
+														  ) }` }
+												</Button>
+											) }
+										/>
+									</MediaUploadCheck>
+									{ icon?.url && (
+										<Button
+											onClick={ () =>
+												handleCategoryIconRemove(
+													category.id
+												)
+											}
+											variant="link"
+											isDestructive
+											size="small"
+										>
+											{ __(
+												'Remove',
+												'gutenberg-taxonomy-cards'
+											) }
+										</Button>
+									) }
+								</div>
+							);
+						} ) }
 					</PanelBody>
 				) }
 			</InspectorControls>
@@ -486,10 +552,16 @@ export default function Edit( { attributes, setAttributes } ) {
 												: undefined
 										}
 									>
-										{ categoryIcons?.[ category.id ] && (
-											<span className="wp-block-taxonomy-category-cards__icon">
-												{ categoryIcons[ category.id ] }
-											</span>
+										{ categoryIcons?.[ category.id ]
+											?.url && (
+											<img
+												className="wp-block-taxonomy-category-cards__icon"
+												src={
+													categoryIcons[ category.id ]
+														.url
+												}
+												alt=""
+											/>
 										) }
 									</div>
 								) }

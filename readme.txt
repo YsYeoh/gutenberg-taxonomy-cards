@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, category, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -24,7 +24,7 @@ Block settings, available in the editor sidebar when the block is selected:
 * **Query** — hide empty categories, order by name/item count/ID, ascending or descending
 * **Style** — card corner radius, image aspect ratio, image fit (cover/contain)
 * **Text Style** — independent font size and color for the title, description, and item count
-* **Icons** — an optional small icon/emoji badge per category, shown at the bottom-left corner of its image
+* **Icons** — an optional small image/SVG badge per category (picked from the Media Library), shown at the bottom-left corner of its image
 * Standard WordPress **Color**, **Typography**, and **Spacing** panels — colors, font size/family/line-height, and margin/padding all pull from your active theme's design settings
 
 If a category has no image, a placeholder is shown. If the categories can't be loaded, the block shows "Unable to load categories." If there are no categories, it shows "No {taxonomy} found."
@@ -57,7 +57,14 @@ No. It only reads and displays terms from whichever taxonomy you select in the b
 
 The chosen post type has no taxonomies registered with `show_in_rest` enabled, so none are available to select.
 
+= Can I use an SVG as a category icon? =
+
+Yes, as long as your site already allows SVG uploads to the Media Library. WordPress disables SVG uploads by default for security reasons; this plugin doesn't change that setting, so you'll need a plugin like Safe SVG (or a custom `upload_mimes` filter) if you haven't already enabled it.
+
 == Changelog ==
+
+= 0.4.0 =
+* Category icons are now Media Library images/SVGs (picked via a media picker in the Icons panel) instead of typed emoji/text.
 
 = 0.3.0 =
 * Cards are now clickable in full, linking to the term archive; the text "View archive" link is optional and off by default.
