@@ -22,15 +22,15 @@ function buildQuery( el ) {
 	return params.toString();
 }
 
-function parseIcons( el ) {
+function parseJSONMap( value ) {
 	try {
-		return JSON.parse( el.dataset.categoryIcons || '{}' );
+		return JSON.parse( value || '{}' );
 	} catch ( error ) {
 		return {};
 	}
 }
 
-function createCard( category, el, icons ) {
+function createCard( category, el, icons, borderColors, animations ) {
 	const showImage = el.dataset.showImage !== 'false';
 	const showDescription = el.dataset.showDescription !== 'false';
 	const showCount = el.dataset.showCount !== 'false';
@@ -38,9 +38,15 @@ function createCard( category, el, icons ) {
 
 	const card = document.createElement( 'a' );
 	card.className = `wp-block-taxonomy-category-cards__card is-animation-${
-		el.dataset.hoverAnimation || 'lift'
+		animations[ category.id ] || el.dataset.hoverAnimation || 'lift'
 	}`;
 	card.href = category.link;
+	if ( borderColors[ category.id ] ) {
+		card.style.setProperty(
+			'--rcc-border-color',
+			borderColors[ category.id ]
+		);
+	}
 
 	if ( showImage ) {
 		const image = document.createElement( 'div' );
@@ -152,11 +158,15 @@ async function hydrate( el ) {
 			return;
 		}
 
-		const icons = parseIcons( el );
+		const icons = parseJSONMap( el.dataset.categoryIcons );
+		const borderColors = parseJSONMap( el.dataset.categoryBorderColors );
+		const animations = parseJSONMap( el.dataset.categoryAnimations );
 		const grid = document.createElement( 'div' );
 		grid.className = 'wp-block-taxonomy-category-cards__grid';
 		categories.forEach( ( category ) =>
-			grid.appendChild( createCard( category, el, icons ) )
+			grid.appendChild(
+				createCard( category, el, icons, borderColors, animations )
+			)
 		);
 
 		el.textContent = '';

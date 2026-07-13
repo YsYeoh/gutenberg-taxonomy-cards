@@ -45,6 +45,8 @@ export default function Edit( { attributes, setAttributes } ) {
 		borderColor,
 		hoverAnimation,
 		iconPosition,
+		categoryBorderColors,
+		categoryAnimations,
 	} = attributes;
 
 	const colors = useSetting( 'color.palette' ) || [];
@@ -121,6 +123,26 @@ export default function Edit( { attributes, setAttributes } ) {
 		const nextIcons = { ...categoryIcons };
 		delete nextIcons[ categoryId ];
 		setAttributes( { categoryIcons: nextIcons } );
+	};
+
+	const handleCategoryBorderColorChange = ( categoryId, value ) => {
+		const next = { ...categoryBorderColors };
+		if ( value ) {
+			next[ categoryId ] = value;
+		} else {
+			delete next[ categoryId ];
+		}
+		setAttributes( { categoryBorderColors: next } );
+	};
+
+	const handleCategoryAnimationChange = ( categoryId, value ) => {
+		const next = { ...categoryAnimations };
+		if ( value ) {
+			next[ categoryId ] = value;
+		} else {
+			delete next[ categoryId ];
+		}
+		setAttributes( { categoryAnimations: next } );
 	};
 
 	const blockProps = useBlockProps( {
@@ -595,6 +617,84 @@ export default function Edit( { attributes, setAttributes } ) {
 						} ) }
 					</PanelBody>
 				) }
+				{ taxonomy && !! categories?.length && (
+					<PanelBody
+						title={ __(
+							'Card Overrides',
+							'gutenberg-taxonomy-cards'
+						) }
+						initialOpen={ false }
+					>
+						<p>
+							{ __(
+								'Per-category border color and hover animation, overriding the shared Border/Style settings above.',
+								'gutenberg-taxonomy-cards'
+							) }
+						</p>
+						{ categories.map( ( category ) => (
+							<div
+								key={ category.id }
+								style={ {
+									marginBottom: '16px',
+									paddingBottom: '16px',
+									borderBottom: '1px solid #ddd',
+								} }
+							>
+								<p
+									style={ {
+										fontWeight: 600,
+										margin: '0 0 4px',
+									} }
+								>
+									{ category.name }
+								</p>
+								<ColorPalette
+									colors={ colors }
+									value={
+										categoryBorderColors?.[ category.id ]
+									}
+									onChange={ ( value ) =>
+										handleCategoryBorderColorChange(
+											category.id,
+											value
+										)
+									}
+									clearable
+								/>
+								<SelectControl
+									label={ __(
+										'Hover animation',
+										'gutenberg-taxonomy-cards'
+									) }
+									value={
+										categoryAnimations?.[ category.id ] ||
+										''
+									}
+									options={ [
+										{
+											label: __(
+												'Use default',
+												'gutenberg-taxonomy-cards'
+											),
+											value: '',
+										},
+										{ label: __( 'Lift' ), value: 'lift' },
+										{ label: __( 'Zoom' ), value: 'zoom' },
+										{ label: __( 'Grow' ), value: 'grow' },
+										{ label: __( 'Fade' ), value: 'fade' },
+										{ label: __( 'None' ), value: 'none' },
+									] }
+									onChange={ ( value ) =>
+										handleCategoryAnimationChange(
+											category.id,
+											value
+										)
+									}
+								/>
+							</div>
+						) ) }
+					</PanelBody>
+				) }
 			</InspectorControls>
 			<div { ...blockProps }>
 				{ ! taxonomy && (
@@ -627,7 +727,16 @@ export default function Edit( { attributes, setAttributes } ) {
 							<a
 								href={ category.link }
 								onClick={ ( event ) => event.preventDefault() }
-								className={ `wp-block-taxonomy-category-cards__card is-animation-${ hoverAnimation }` }
+								className={ `wp-block-taxonomy-category-cards__card is-animation-${
+									categoryAnimations?.[ category.id ] ||
+									hoverAnimation
+								}` }
+								style={ {
+									'--rcc-border-color':
+										categoryBorderColors?.[ category.id ] ||
+										borderColor ||
+										undefined,
+								} }
 								key={ category.id }
 							>
 								{ showImage && (

@@ -28,6 +28,8 @@ export default function save( { attributes } ) {
 		borderColor,
 		hoverAnimation,
 		iconPosition,
+		categoryBorderColors,
+		categoryAnimations,
 	} = attributes;
 
 	const blockProps = useBlockProps.save( {
@@ -59,6 +61,10 @@ export default function save( { attributes } ) {
 		'data-category-icons': JSON.stringify( categoryIcons || {} ),
 		'data-hover-animation': hoverAnimation,
 		'data-icon-position': iconPosition,
+		'data-category-border-colors': JSON.stringify(
+			categoryBorderColors || {}
+		),
+		'data-category-animations': JSON.stringify( categoryAnimations || {} ),
 	} );
 
 	// Markup is a static placeholder only. view.js fetches the live
