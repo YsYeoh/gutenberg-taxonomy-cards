@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, posts, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -97,6 +97,9 @@ Yes, as long as your site already allows SVG uploads to the Media Library. WordP
 The WordPress REST API doesn't expose a post count field on user objects, and adding one would require a separate request per author. Each card still links to that author's archive, where the count is visible.
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed a layout bug where a block's card grid could shrink or overflow its container when placed inside a theme's flex-layout Group ("Row"/"Stack") block, most visible at large screen widths. Every block's wrapper now explicitly fills its container's width instead of relying on the parent to stretch it.
 
 = 1.2.0 =
 * Featured Post: added a "Post selection" option to always show the site's latest post automatically, instead of always requiring a manually picked post.
