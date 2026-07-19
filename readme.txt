@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, posts, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -27,7 +27,12 @@ A responsive grid of **all** terms in a taxonomy you pick (post type → taxonom
 * **Text Style** — independent font size and color for the title, description, and item count
 * **Icons** — an optional small image/SVG badge per category (from the Media Library), placed in any of the four corners of its image
 * **Card Overrides** — per-category border color and hover animation, overriding the shared defaults for individual categories in the same grid
-* **Block styles** — an alternate "Overlay" look (from the block's Styles panel), with the name/description/count overlaid directly on the image over a bottom gradient scrim, instead of sitting below it
+* **Block styles** — five alternate looks selectable from the block's Styles panel, on top of the default image-above-text card:
+  * **Overlay** — name/description/count overlaid directly on the image over a bottom gradient scrim, instead of sitting below it
+  * **Minimal** — no image, just name/description/count in a compact box
+  * **List** — horizontal rows (thumbnail left, text right) instead of a grid
+  * **Circular** — a centered circular thumbnail with the name below, minimal chrome
+  * **Featured First** — the first term (per the block's own sort order) spans a larger area, with the rest in a smaller grid around it
 * Standard WordPress **Color**, **Typography**, and **Spacing** panels — pull from your active theme's design settings
 
 If a category has no image, a placeholder is shown. If the categories can't be loaded, the block shows "Unable to load categories." If there are no categories, it shows "No {taxonomy} found."
@@ -98,6 +103,9 @@ Yes, as long as your site already allows SVG uploads to the Media Library. WordP
 The WordPress REST API doesn't expose a post count field on user objects, and adding one would require a separate request per author. Each card still links to that author's archive, where the count is visible.
 
 == Changelog ==
+
+= 1.4.0 =
+* Added four more block styles to Taxonomy Category Cards: Minimal (no image), List (horizontal rows instead of a grid), Circular (centered circular thumbnail), and Featured First (first term spans a larger area).
 
 = 1.3.0 =
 * Added an "Overlay" block style to Taxonomy Category Cards (selectable from the Styles panel): name/description/item count overlaid directly on the image over a bottom gradient scrim, instead of sitting below it.

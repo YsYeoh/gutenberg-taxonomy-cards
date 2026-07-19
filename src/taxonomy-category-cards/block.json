@@ -43,7 +43,11 @@
   },
   "styles": [
     { "name": "default", "label": "Default", "isDefault": true },
-    { "name": "overlay", "label": "Overlay" }
+    { "name": "overlay", "label": "Overlay" },
+    { "name": "minimal", "label": "Minimal" },
+    { "name": "list", "label": "List" },
+    { "name": "circular", "label": "Circular" },
+    { "name": "featured-first", "label": "Featured First" }
   ],
   "supports": {
     "html": false,
