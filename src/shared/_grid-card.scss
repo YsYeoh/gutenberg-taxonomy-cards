@@ -173,6 +173,41 @@
 	}
 }
 
+// Optional block style variation (registered via block.json's "styles"
+// field, toggled by the user from the Styles panel as `is-style-overlay`
+// on the wrapper). Reuses the same __image/__content markup as the default
+// style — .__content just becomes an absolutely-positioned overlay pinned
+// to the bottom of .__image instead of sitting below it in normal flow, so
+// existing controls (image ratio, per-element text style, etc.) keep
+// working unchanged.
+@mixin overlay-style($prefix) {
+
+	&.is-style-overlay {
+		.#{$prefix}__card {
+			position: relative;
+		}
+
+		.#{$prefix}__content {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1;
+			// Extra headroom above the text: the gradient fades out across
+			// this padding instead of across the text itself, so the title
+			// always sits on the fully-opaque part of the scrim regardless
+			// of how much text a given card has.
+			padding-top: 48px;
+			background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.85) 55%, rgba(0, 0, 0, 0) 100%);
+
+			// The scrim is always dark, so overlaid text needs to stay light
+			// regardless of the theme's resolved text color; per-element Text
+			// Style color overrides still win since they're inline styles.
+			color: #fff;
+		}
+	}
+}
+
 @mixin editor-reset($prefix) {
 	.#{$prefix}__card {
 
