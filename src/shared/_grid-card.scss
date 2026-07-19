@@ -10,6 +10,16 @@
 	--rcc-radius: 16px;
 	--rcc-ratio: 4/3;
 
+	// Some themes place this block inside a flex-layout Group ("Row"/"Stack")
+	// block. Flex items default to shrink-to-fit sizing unless the container
+	// explicitly stretches them, so without an explicit width the block (and
+	// the 1fr grid inside it) sizes itself off its own content instead of the
+	// space actually available — which can make the grid narrower OR wider
+	// than its container depending on content, most visibly at large viewport
+	// widths where fluid typography grows. Always fill the parent instead.
+	box-sizing: border-box;
+	width: 100%;
+
 	// Fallback color/background when no Color support values are set in the
 	// editor. Both are real (non-inline) declarations on this same element,
 	// so if the block's Color panel is used, Gutenberg's inline style on this
