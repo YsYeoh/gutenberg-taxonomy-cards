@@ -208,6 +208,103 @@
 	}
 }
 
+// No image at all — just icon/name/description/count in a compact box.
+// The icon badge lives inside .__image (it's positioned relative to it),
+// so hiding the image also hides any per-term icon badge for this style;
+// that's an accepted trade-off rather than a bug, since a corner-badge
+// icon has nowhere sensible to sit without an image to anchor it to.
+@mixin minimal-style($prefix) {
+
+	&.is-style-minimal {
+		.#{$prefix}__image {
+			display: none;
+		}
+	}
+}
+
+// Horizontal rows instead of a grid: thumbnail on the left, text on the
+// right, one term per row. Mirrors the same flex-row treatment featured-post
+// and featured-category already use for their own horizontal layout, just
+// applied to every card in the collection instead of a single one.
+@mixin list-style($prefix) {
+
+	&.is-style-list {
+		.#{$prefix}__grid {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.#{$prefix}__card {
+			flex-direction: row;
+			height: auto;
+		}
+
+		.#{$prefix}__image {
+			flex: 0 0 140px;
+			border-radius: var(--rcc-radius, 16px) 0 0 var(--rcc-radius, 16px);
+		}
+
+		.#{$prefix}__content {
+			flex: 1;
+		}
+
+		@media (max-width: 480px) {
+			.#{$prefix}__card {
+				flex-direction: column;
+			}
+
+			.#{$prefix}__image {
+				flex-basis: auto;
+				border-radius:
+					var(--rcc-radius, 16px) var(--rcc-radius, 16px) 0
+					0;
+			}
+		}
+	}
+}
+
+// Centered circular thumbnail with the name below, minimal chrome — the
+// same avatar-style treatment author-cards already uses for its own image,
+// reused here as a selectable look rather than a separate block.
+@mixin circular-style($prefix) {
+
+	&.is-style-circular {
+		.#{$prefix}__card {
+			align-items: center;
+			padding-top: 24px;
+			text-align: center;
+		}
+
+		.#{$prefix}__image {
+			flex: none;
+			width: 96px;
+			height: 96px;
+			margin: 0 auto;
+			aspect-ratio: 1;
+			border-radius: 50%;
+		}
+	}
+}
+
+// Magazine-style hierarchy: the first term (whichever term sorts first
+// under the block's own Query settings — no separate attribute needed)
+// spans a 2x2 area, the rest sit in the regular grid around it. Grid spans
+// clamp gracefully on narrower breakpoints (2 or 1 columns), so this needs
+// no extra responsive handling beyond the base grid's own media queries.
+@mixin featured-first-style($prefix) {
+
+	&.is-style-featured-first {
+		.#{$prefix}__grid > :first-child {
+			grid-row: span 2;
+			grid-column: span 2;
+		}
+
+		.#{$prefix}__grid > :first-child .#{$prefix}__title {
+			font-size: 1.4em;
+		}
+	}
+}
+
 @mixin editor-reset($prefix) {
 	.#{$prefix}__card {
 

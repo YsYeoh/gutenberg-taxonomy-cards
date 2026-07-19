@@ -4,6 +4,10 @@
 
 	@include gtc.wrapper-defaults;
 	@include gtc.overlay-style("wp-block-taxonomy-category-cards");
+	@include gtc.minimal-style("wp-block-taxonomy-category-cards");
+	@include gtc.list-style("wp-block-taxonomy-category-cards");
+	@include gtc.circular-style("wp-block-taxonomy-category-cards");
+	@include gtc.featured-first-style("wp-block-taxonomy-category-cards");
 }
 
 @include gtc.grid-card("wp-block-taxonomy-category-cards");
