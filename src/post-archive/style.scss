@@ -1,0 +1,50 @@
+@use "../shared/grid-card" as gtc;
+
+.wp-block-gutenberg-taxonomy-cards-post-archive {
+
+	@include gtc.wrapper-defaults;
+}
+
+@include gtc.grid-card("wp-block-post-archive");
+
+.wp-block-post-archive__menu {
+	display: flex;
+	gap: var(--rcc-pill-gap, 8px);
+	margin: 0 0 24px;
+	padding: 0 0 4px;
+	list-style: none;
+	overflow-x: auto;
+}
+
+.wp-block-post-archive__menu-item {
+	display: inline-flex;
+	flex: none;
+}
+
+.wp-block-post-archive__pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 8px 18px;
+	border: none;
+	border-radius: var(--rcc-pill-radius, 999px);
+	background-color: var(--rcc-pill-bg, rgba(0, 0, 0, 0.06));
+	color: var(--rcc-pill-color, inherit);
+	font: inherit;
+	font-weight: 600;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease;
+
+	&:hover {
+		background-color: var(--rcc-pill-bg-hover, rgba(0, 0, 0, 0.12));
+	}
+
+	// A fixed, high-contrast pair for the "selected" state — same
+	// reasoning as .is-placeholder's fixed gray elsewhere in this plugin:
+	// it's a UI state indicator, not card content, so it doesn't need to
+	// track the theme's resolved text color the way title/description do.
+	&.is-active {
+		background-color: #1e1e1e;
+		color: #fff;
+	}
+}

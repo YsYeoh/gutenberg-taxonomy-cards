@@ -4,15 +4,15 @@ Tags: gutenberg, block, taxonomy, posts, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.4.1
+Stable tag: 1.5.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
-Six blocks that dynamically display taxonomy terms, posts, and authors from the REST API as responsive cards, with no PHP rendering required.
+Seven blocks that dynamically display taxonomy terms, posts, and authors from the REST API as responsive cards, with no PHP rendering required.
 
 == Description ==
 
-Gutenberg Taxonomy Cards adds six blocks to the block editor, all fetching data client-side (in both the editor and on the live frontend) rather than using PHP server-side rendering — so they work on hosts that only allow plugin uploads and don't permit custom server code, such as WordPress.com Premium.
+Gutenberg Taxonomy Cards adds seven blocks to the block editor, all fetching data client-side (in both the editor and on the live frontend) rather than using PHP server-side rendering — so they work on hosts that only allow plugin uploads and don't permit custom server code, such as WordPress.com Premium.
 
 = Taxonomy Category Cards =
 
@@ -66,6 +66,16 @@ A lightweight, non-card display of a taxonomy's terms as clickable pills or a pl
 
 A responsive grid of site authors (avatar, name, bio) linking to each author's archive. Only shows users who have published at least one public post, matching how WordPress itself decides which authors are safe to expose to anonymous visitors.
 
+= Post Archive =
+
+An interactive "browse page" block for a post type (e.g. a Recipes or Products archive page): a category menu sits above a post grid, and clicking a category re-fetches and re-renders the grid instantly, with no page reload. Good as the main block on a dedicated archive page.
+
+* **Source** — post type, then optionally a taxonomy to build the category menu from
+* **Category Menu** — show/hide it, a customizable "show everything" label, order categories by name/item count/ID, and pill styling (gap, corner radius, background/text color)
+* **Layout, Content, Query, Style, Border & Card Background, Text Style** — the same rich set of controls as Post Cards, for the grid itself
+
+Since post type and taxonomy are freely configurable (nothing is hardcoded), the same block works for any two archive pages — e.g. one instance filtering Recipes by Recipe Category, another filtering Products by Product Category.
+
 This plugin does not create any taxonomies, post types, or users itself — every block only reads and displays what already exists on your site.
 
 == Installation ==
@@ -73,7 +83,7 @@ This plugin does not create any taxonomies, post types, or users itself — ever
 1. In your WordPress admin, go to **Plugins → Add New → Upload Plugin**.
 2. Choose the plugin zip file and click **Install Now**.
 3. Click **Activate**.
-4. Edit any post or page, open the block inserter, and add any of: **Taxonomy Category Cards**, **Post Cards**, **Featured Post**, **Featured Category**, **Category Pills**, or **Author Cards**.
+4. Edit any post or page, open the block inserter, and add any of: **Taxonomy Category Cards**, **Post Cards**, **Featured Post**, **Featured Category**, **Category Pills**, **Author Cards**, or **Post Archive**.
 5. In the block's Source panel, pick a post type and (where applicable) a taxonomy or term.
 
 == Frequently Asked Questions ==
@@ -103,6 +113,9 @@ Yes, as long as your site already allows SVG uploads to the Media Library. WordP
 The WordPress REST API doesn't expose a post count field on user objects, and adding one would require a separate request per author. Each card still links to that author's archive, where the count is visible.
 
 == Changelog ==
+
+= 1.5.0 =
+* Added a new block: Post Archive. An interactive "browse page" block for a post type — a taxonomy category menu filters a post grid instantly, with no page reload. Built for dedicated archive pages (e.g. a Recipes or Products browse page), reusing the same post type/taxonomy configurability as the rest of the plugin.
 
 = 1.4.1 =
 * Taxonomy Category Cards: raised the "Columns" control's maximum from 4 to 6.

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "gutenberg-taxonomy-cards/post-archive",
+  "title": "Post Archive",
+  "category": "widgets",
+  "description": "An interactive browse page for a post type: a taxonomy category menu filters a card grid live, without a page reload.",
+  "keywords": [ "archive", "browse", "catalog", "filter", "recipes", "products" ],
+  "version": "1.0.0",
+  "textdomain": "gutenberg-taxonomy-cards",
+  "attributes": {
+    "postType": { "type": "string", "default": "" },
+    "postTypeRestBase": { "type": "string", "default": "" },
+    "taxonomy": { "type": "string", "default": "" },
+    "taxonomyRestBase": { "type": "string", "default": "" },
+    "taxonomyLabel": { "type": "string", "default": "" },
+    "showCategoryMenu": { "type": "boolean", "default": true },
+    "allTermsLabel": { "type": "string", "default": "All" },
+    "termOrderBy": { "type": "string", "default": "name" },
+    "termOrder": { "type": "string", "default": "asc" },
+    "perPage": { "type": "number", "default": 9 },
+    "columns": { "type": "number", "default": 3 },
+    "gap": { "type": "number", "default": 24 },
+    "showImage": { "type": "boolean", "default": true },
+    "showExcerpt": { "type": "boolean", "default": true },
+    "showAuthor": { "type": "boolean", "default": true },
+    "showDate": { "type": "boolean", "default": true },
+    "showCta": { "type": "boolean", "default": false },
+    "orderBy": { "type": "string", "default": "date" },
+    "order": { "type": "string", "default": "desc" },
+    "cardRadius": { "type": "number", "default": 16 },
+    "imageRatio": { "type": "string", "default": "4/3" },
+    "imageFit": { "type": "string", "default": "cover" },
+    "hoverAnimation": { "type": "string", "default": "lift" },
+    "borderWidth": { "type": "number", "default": 0 },
+    "borderStyle": { "type": "string", "default": "solid" },
+    "borderColor": { "type": "string", "default": "" },
+    "cardBackgroundColor": { "type": "string", "default": "" },
+    "titleFontSize": { "type": "number", "default": 0 },
+    "titleColor": { "type": "string", "default": "" },
+    "excerptFontSize": { "type": "number", "default": 0 },
+    "excerptColor": { "type": "string", "default": "" },
+    "metaFontSize": { "type": "number", "default": 0 },
+    "metaColor": { "type": "string", "default": "" },
+    "pillGap": { "type": "number", "default": 8 },
+    "pillRadius": { "type": "number", "default": 999 },
+    "pillBackgroundColor": { "type": "string", "default": "" },
+    "pillTextColor": { "type": "string", "default": "" }
+  },
+  "supports": {
+    "html": false,
+    "align": [ "wide", "full" ],
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontFamily": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js"
+}

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Gutenberg Taxonomy Cards
  * Description:       A set of Gutenberg blocks that dynamically display taxonomy terms, posts, and authors from the REST API as responsive cards. No server-side rendering.
- * Version:           1.4.1
+ * Version:           1.5.0
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Yongsen
