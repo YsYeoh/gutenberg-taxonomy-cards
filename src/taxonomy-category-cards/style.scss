@@ -3,6 +3,7 @@
 .wp-block-gutenberg-taxonomy-cards-taxonomy-category-cards {
 
 	@include gtc.wrapper-defaults;
+	@include gtc.overlay-style("wp-block-taxonomy-category-cards");
 }
 
 @include gtc.grid-card("wp-block-taxonomy-category-cards");

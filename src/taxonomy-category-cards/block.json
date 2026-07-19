@@ -41,6 +41,10 @@
     "categoryBorderColors": { "type": "object", "default": {} },
     "categoryAnimations": { "type": "object", "default": {} }
   },
+  "styles": [
+    { "name": "default", "label": "Default", "isDefault": true },
+    { "name": "overlay", "label": "Overlay" }
+  ],
   "supports": {
     "html": false,
     "align": [ "wide", "full" ],

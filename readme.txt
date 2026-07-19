@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, posts, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -27,6 +27,7 @@ A responsive grid of **all** terms in a taxonomy you pick (post type → taxonom
 * **Text Style** — independent font size and color for the title, description, and item count
 * **Icons** — an optional small image/SVG badge per category (from the Media Library), placed in any of the four corners of its image
 * **Card Overrides** — per-category border color and hover animation, overriding the shared defaults for individual categories in the same grid
+* **Block styles** — an alternate "Overlay" look (from the block's Styles panel), with the name/description/count overlaid directly on the image over a bottom gradient scrim, instead of sitting below it
 * Standard WordPress **Color**, **Typography**, and **Spacing** panels — pull from your active theme's design settings
 
 If a category has no image, a placeholder is shown. If the categories can't be loaded, the block shows "Unable to load categories." If there are no categories, it shows "No {taxonomy} found."
@@ -97,6 +98,9 @@ Yes, as long as your site already allows SVG uploads to the Media Library. WordP
 The WordPress REST API doesn't expose a post count field on user objects, and adding one would require a separate request per author. Each card still links to that author's archive, where the count is visible.
 
 == Changelog ==
+
+= 1.3.0 =
+* Added an "Overlay" block style to Taxonomy Category Cards (selectable from the Styles panel): name/description/item count overlaid directly on the image over a bottom gradient scrim, instead of sitting below it.
 
 = 1.2.1 =
 * Fixed a layout bug where a block's card grid could shrink or overflow its container when placed inside a theme's flex-layout Group ("Row"/"Stack") block, most visible at large screen widths. Every block's wrapper now explicitly fills its container's width instead of relying on the parent to stretch it.
