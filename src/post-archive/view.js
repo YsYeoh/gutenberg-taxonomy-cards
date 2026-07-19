@@ -3,14 +3,16 @@
  *
  * save.js only outputs a static placeholder (no PHP rendering, so no
  * server-fetched data can be baked in). This script fetches the taxonomy's
- * terms as a category menu and the post grid, then wires the menu so
- * clicking a category re-fetches and re-renders just the grid — no page
- * reload. All state (the currently selected term, the active pill) lives
- * in this function's closures, scoped per block instance, so multiple
- * Post Archive blocks on the same page don't interfere with each other.
+ * terms as a category menu and the post grid, then wires the menu, search
+ * box, and "Load more" button so they filter/extend the grid in place —
+ * no page reload. All state (selected term, search text, current page,
+ * total pages) lives in this function's closures, scoped per block
+ * instance, so multiple Post Archive blocks on the same page don't
+ * interfere with each other.
  */
 
 const BLOCK_SELECTOR = '.wp-block-gutenberg-taxonomy-cards-post-archive';
+const SEARCH_DEBOUNCE_MS = 350;
 
 function stripHtml( html ) {
 	const div = document.createElement( 'div' );
@@ -24,19 +26,6 @@ function formatDate( dateString ) {
 		month: 'long',
 		day: 'numeric',
 	} );
-}
-
-function buildPostsQuery( el, termId ) {
-	const params = new URLSearchParams( {
-		per_page: el.dataset.perPage || '9',
-		orderby: el.dataset.orderBy || 'date',
-		order: el.dataset.order || 'desc',
-		_embed: '1',
-	} );
-	if ( el.dataset.taxonomyRestBase && termId ) {
-		params.set( el.dataset.taxonomyRestBase, termId );
-	}
-	return params.toString();
 }
 
 function createCard( post, el ) {
@@ -133,35 +122,7 @@ function renderGridMessage( grid, message ) {
 	grid.appendChild( p );
 }
 
-async function loadPosts( el, grid, termId ) {
-	const restBase = el.dataset.postTypeRestBase;
-	renderGridMessage( grid, 'Loading posts…' );
-
-	try {
-		const response = await fetch(
-			`/wp-json/wp/v2/${ restBase }?${ buildPostsQuery( el, termId ) }`
-		);
-		if ( ! response.ok ) {
-			throw new Error(
-				`Request failed with status ${ response.status }`
-			);
-		}
-		const posts = await response.json();
-
-		if ( ! Array.isArray( posts ) || posts.length === 0 ) {
-			renderGridMessage( grid, 'No posts found.' );
-			return;
-		}
-
-		grid.textContent = '';
-		grid.className = 'wp-block-post-archive__grid';
-		posts.forEach( ( post ) => grid.appendChild( createCard( post, el ) ) );
-	} catch ( error ) {
-		renderGridMessage( grid, 'Unable to load posts.' );
-	}
-}
-
-function buildMenu( el, categories, grid ) {
+function buildMenu( el, categories, onSelect ) {
 	const menu = document.createElement( 'ul' );
 	menu.className = 'wp-block-post-archive__menu';
 
@@ -173,7 +134,7 @@ function buildMenu( el, categories, grid ) {
 		}
 		button.classList.add( 'is-active' );
 		activeButton = button;
-		loadPosts( el, grid, termId );
+		onSelect( termId );
 	}
 
 	function addItem( label, termId ) {
@@ -199,6 +160,23 @@ function buildMenu( el, categories, grid ) {
 	return menu;
 }
 
+function buildSearchInput( el, onSearch ) {
+	const input = document.createElement( 'input' );
+	input.type = 'search';
+	input.className = 'wp-block-post-archive__search';
+	input.placeholder = el.dataset.searchPlaceholder || 'Search…';
+
+	let debounceTimer;
+	input.addEventListener( 'input', () => {
+		clearTimeout( debounceTimer );
+		debounceTimer = setTimeout( () => {
+			onSearch( input.value.trim() );
+		}, SEARCH_DEBOUNCE_MS );
+	} );
+
+	return input;
+}
+
 async function hydrate( el ) {
 	const restBase = el.dataset.postTypeRestBase;
 	if ( ! restBase ) {
@@ -212,8 +190,135 @@ async function hydrate( el ) {
 
 	el.textContent = '';
 
+	// Per-instance state — a fresh page load, or a second Post Archive
+	// block elsewhere on the page, always starts unfiltered on page 1.
+	let currentTerm = 0;
+	let currentSearch = '';
+	let currentPage = 1;
+	let totalPages = 1;
+
 	const grid = document.createElement( 'div' );
 	grid.className = 'wp-block-post-archive__grid';
+
+	const showLoadMore = el.dataset.showLoadMore === 'true';
+	let loadMoreWrap = null;
+	let loadMoreButton = null;
+
+	function updateLoadMoreVisibility() {
+		if ( ! loadMoreWrap ) {
+			return;
+		}
+		loadMoreWrap.hidden = currentPage >= totalPages;
+	}
+
+	function buildQuery( page ) {
+		const params = new URLSearchParams( {
+			per_page: el.dataset.perPage || '9',
+			orderby: el.dataset.orderBy || 'date',
+			order: el.dataset.order || 'desc',
+			page: String( page ),
+			_embed: '1',
+		} );
+		if ( el.dataset.taxonomyRestBase && currentTerm ) {
+			params.set( el.dataset.taxonomyRestBase, currentTerm );
+		}
+		if ( currentSearch ) {
+			params.set( 'search', currentSearch );
+		}
+		return params.toString();
+	}
+
+	// Replaces the grid entirely — used on first load and whenever the
+	// category or search filter changes, always resetting back to page 1.
+	async function fetchAndReplace() {
+		currentPage = 1;
+		renderGridMessage( grid, 'Loading posts…' );
+		if ( loadMoreWrap ) {
+			loadMoreWrap.hidden = true;
+		}
+
+		try {
+			const response = await fetch(
+				`/wp-json/wp/v2/${ restBase }?${ buildQuery( 1 ) }`
+			);
+			if ( ! response.ok ) {
+				throw new Error(
+					`Request failed with status ${ response.status }`
+				);
+			}
+			totalPages =
+				parseInt(
+					response.headers.get( 'X-WP-TotalPages' ) || '1',
+					10
+				) || 1;
+			const posts = await response.json();
+
+			if ( ! Array.isArray( posts ) || posts.length === 0 ) {
+				renderGridMessage( grid, 'No posts found.' );
+				return;
+			}
+
+			grid.textContent = '';
+			grid.className = 'wp-block-post-archive__grid';
+			posts.forEach( ( post ) =>
+				grid.appendChild( createCard( post, el ) )
+			);
+			updateLoadMoreVisibility();
+		} catch ( error ) {
+			renderGridMessage( grid, 'Unable to load posts.' );
+		}
+	}
+
+	// Appends the next page of results — used only by "Load more", so
+	// existing cards stay in place while more are fetched in behind them.
+	async function fetchAndAppend() {
+		if ( loadMoreButton ) {
+			loadMoreButton.disabled = true;
+		}
+
+		try {
+			const response = await fetch(
+				`/wp-json/wp/v2/${ restBase }?${ buildQuery( currentPage ) }`
+			);
+			if ( ! response.ok ) {
+				throw new Error(
+					`Request failed with status ${ response.status }`
+				);
+			}
+			totalPages =
+				parseInt(
+					response.headers.get( 'X-WP-TotalPages' ) || '1',
+					10
+				) || 1;
+			const posts = await response.json();
+			if ( Array.isArray( posts ) ) {
+				posts.forEach( ( post ) =>
+					grid.appendChild( createCard( post, el ) )
+				);
+			}
+			updateLoadMoreVisibility();
+		} catch ( error ) {
+			// Leave the results already on the page in place; just stop
+			// offering more rather than showing an error under a grid
+			// that's otherwise working fine.
+			if ( loadMoreWrap ) {
+				loadMoreWrap.hidden = true;
+			}
+		} finally {
+			if ( loadMoreButton ) {
+				loadMoreButton.disabled = false;
+			}
+		}
+	}
+
+	if ( el.dataset.showSearch === 'true' ) {
+		el.appendChild(
+			buildSearchInput( el, ( value ) => {
+				currentSearch = value;
+				fetchAndReplace();
+			} )
+		);
+	}
 
 	if (
 		el.dataset.showCategoryMenu === 'true' &&
@@ -231,7 +336,12 @@ async function hydrate( el ) {
 			if ( response.ok ) {
 				const categories = await response.json();
 				if ( Array.isArray( categories ) && categories.length ) {
-					el.appendChild( buildMenu( el, categories, grid ) );
+					el.appendChild(
+						buildMenu( el, categories, ( termId ) => {
+							currentTerm = termId;
+							fetchAndReplace();
+						} )
+					);
 				}
 			}
 		} catch ( error ) {
@@ -241,7 +351,26 @@ async function hydrate( el ) {
 	}
 
 	el.appendChild( grid );
-	loadPosts( el, grid, 0 );
+
+	if ( showLoadMore ) {
+		loadMoreWrap = document.createElement( 'div' );
+		loadMoreWrap.className = 'wp-block-post-archive__load-more-wrap';
+		loadMoreWrap.hidden = true;
+
+		loadMoreButton = document.createElement( 'button' );
+		loadMoreButton.type = 'button';
+		loadMoreButton.className = 'wp-block-post-archive__load-more';
+		loadMoreButton.textContent = el.dataset.loadMoreLabel || 'Load more';
+		loadMoreButton.addEventListener( 'click', () => {
+			currentPage += 1;
+			fetchAndAppend();
+		} );
+
+		loadMoreWrap.appendChild( loadMoreButton );
+		el.appendChild( loadMoreWrap );
+	}
+
+	fetchAndReplace();
 }
 
 document.addEventListener( 'DOMContentLoaded', () => {

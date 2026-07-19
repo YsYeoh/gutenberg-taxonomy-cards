@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, posts, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.6.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -68,11 +68,13 @@ A responsive grid of site authors (avatar, name, bio) linking to each author's a
 
 = Post Archive =
 
-An interactive "browse page" block for a post type (e.g. a Recipes or Products archive page): a category menu sits above a post grid, and clicking a category re-fetches and re-renders the grid instantly, with no page reload. Good as the main block on a dedicated archive page.
+An interactive "browse page" block for a post type (e.g. a Recipes or Products archive page): a search box and a category menu sit above a post grid, and typing a search or clicking a category re-fetches and re-renders the grid instantly, with no page reload, with a "Load more" button to page through further results. Good as the main block on a dedicated archive page.
 
 * **Source** — post type, then optionally a taxonomy to build the category menu from
 * **Category Menu** — show/hide it, a customizable "show everything" label, order categories by name/item count/ID, and pill styling (gap, corner radius, background/text color)
-* **Layout, Content, Query, Style, Border & Card Background, Text Style** — the same rich set of controls as Post Cards, for the grid itself
+* **Search** — show/hide a search box, with a customizable placeholder; combines with the active category filter
+* **Query** — posts per page, order by/order, and a "Load more" button (customizable label) that fetches and appends the next page of results in place
+* **Layout, Content, Style, Border & Card Background, Text Style** — the same rich set of controls as Post Cards, for the grid itself
 
 Since post type and taxonomy are freely configurable (nothing is hardcoded), the same block works for any two archive pages — e.g. one instance filtering Recipes by Recipe Category, another filtering Products by Product Category.
 
@@ -113,6 +115,11 @@ Yes, as long as your site already allows SVG uploads to the Media Library. WordP
 The WordPress REST API doesn't expose a post count field on user objects, and adding one would require a separate request per author. Each card still links to that author's archive, where the count is visible.
 
 == Changelog ==
+
+= 1.6.0 =
+* Post Archive: added a search box (combines with the active category filter) and a "Load more" button that pages through further results in place, with no page reload.
+* Post Cards and Author Cards: raised the "Columns" control's maximum from 4 to 6, matching Taxonomy Category Cards and Post Archive.
+* Fixed the plugin README (still said "six blocks", no mention of Post Archive).
 
 = 1.5.0 =
 * Added a new block: Post Archive. An interactive "browse page" block for a post type — a taxonomy category menu filters a post grid instantly, with no page reload. Built for dedicated archive pages (e.g. a Recipes or Products browse page), reusing the same post type/taxonomy configurability as the rest of the plugin.

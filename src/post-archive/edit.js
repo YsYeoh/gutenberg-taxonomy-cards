@@ -38,6 +38,10 @@ export default function Edit( { attributes, setAttributes } ) {
 		allTermsLabel,
 		termOrderBy,
 		termOrder,
+		showSearch,
+		searchPlaceholder,
+		showLoadMore,
+		loadMoreLabel,
 		perPage,
 		columns,
 		gap,
@@ -68,10 +72,12 @@ export default function Edit( { attributes, setAttributes } ) {
 		pillTextColor,
 	} = attributes;
 
-	// Which category is active in THIS editor preview only — never saved.
-	// The frontend always starts unfiltered ("All") on page load; there is
-	// no notion of a "default selected term" for an archive page.
+	// Which category is active, and the current search text, in THIS editor
+	// preview only — never saved. The frontend always starts unfiltered
+	// ("All", empty search) on page load; there is no notion of a "default"
+	// filter state for an archive page.
 	const [ selectedTerm, setSelectedTerm ] = useState( 0 );
+	const [ searchQuery, setSearchQuery ] = useState( '' );
 
 	const colors = useSetting( 'color.palette' ) || [];
 
@@ -123,6 +129,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				...( taxonomy && selectedTerm && taxonomyItem?.rest_base
 					? { [ taxonomyItem.rest_base ]: selectedTerm }
 					: {} ),
+				...( searchQuery ? { search: searchQuery } : {} ),
 			};
 			const selectorArgs = [ 'postType', postType, query ];
 			return {
@@ -137,6 +144,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			postType,
 			taxonomy,
 			selectedTerm,
+			searchQuery,
 			perPage,
 			orderBy,
 			order,
@@ -369,6 +377,36 @@ export default function Edit( { attributes, setAttributes } ) {
 						</>
 					) }
 				</PanelBody>
+				<PanelBody title={ __( 'Search', 'gutenberg-taxonomy-cards' ) }>
+					<ToggleControl
+						label={ __(
+							'Show search box',
+							'gutenberg-taxonomy-cards'
+						) }
+						help={ __(
+							'A text search above the grid, combined with the active category filter.',
+							'gutenberg-taxonomy-cards'
+						) }
+						checked={ showSearch }
+						onChange={ ( value ) =>
+							setAttributes( { showSearch: value } )
+						}
+					/>
+					{ showSearch && (
+						<TextControl
+							label={ __(
+								'Placeholder text',
+								'gutenberg-taxonomy-cards'
+							) }
+							value={ searchPlaceholder }
+							onChange={ ( value ) =>
+								setAttributes( {
+									searchPlaceholder: value,
+								} )
+							}
+						/>
+					) }
+				</PanelBody>
 				<PanelBody title={ __( 'Layout', 'gutenberg-taxonomy-cards' ) }>
 					<RangeControl
 						label={ __( 'Columns', 'gutenberg-taxonomy-cards' ) }
@@ -447,9 +485,17 @@ export default function Edit( { attributes, setAttributes } ) {
 				<PanelBody title={ __( 'Query', 'gutenberg-taxonomy-cards' ) }>
 					<RangeControl
 						label={ __(
-							'Number of posts',
+							'Posts per page',
 							'gutenberg-taxonomy-cards'
 						) }
+						help={
+							showLoadMore
+								? __(
+										'How many posts to show at a time; "Load more" fetches the next batch of this size.',
+										'gutenberg-taxonomy-cards'
+								  )
+								: undefined
+						}
 						value={ perPage }
 						onChange={ ( value ) =>
 							setAttributes( { perPage: value || 1 } )
@@ -480,6 +526,32 @@ export default function Edit( { attributes, setAttributes } ) {
 							setAttributes( { order: value } )
 						}
 					/>
+					<ToggleControl
+						label={ __(
+							'Show "Load more" button',
+							'gutenberg-taxonomy-cards'
+						) }
+						help={ __(
+							'Fetches and appends the next page of results in place, with no page reload.',
+							'gutenberg-taxonomy-cards'
+						) }
+						checked={ showLoadMore }
+						onChange={ ( value ) =>
+							setAttributes( { showLoadMore: value } )
+						}
+					/>
+					{ showLoadMore && (
+						<TextControl
+							label={ __(
+								'Button label',
+								'gutenberg-taxonomy-cards'
+							) }
+							value={ loadMoreLabel }
+							onChange={ ( value ) =>
+								setAttributes( { loadMoreLabel: value } )
+							}
+						/>
+					) }
 				</PanelBody>
 				<PanelBody title={ __( 'Style', 'gutenberg-taxonomy-cards' ) }>
 					<RangeControl
@@ -723,6 +795,17 @@ export default function Edit( { attributes, setAttributes } ) {
 						) }
 					</p>
 				) }
+				{ postType && showSearch && (
+					<input
+						type="search"
+						className="wp-block-post-archive__search"
+						placeholder={ searchPlaceholder }
+						value={ searchQuery }
+						onChange={ ( event ) =>
+							setSearchQuery( event.target.value )
+						}
+					/>
+				) }
 				{ postType && showCategoryMenu && taxonomy && (
 					<ul className="wp-block-post-archive__menu">
 						<li className="wp-block-post-archive__menu-item">
@@ -878,6 +961,20 @@ export default function Edit( { attributes, setAttributes } ) {
 						} ) }
 					</div>
 				) }
+				{ postType &&
+					hasResolved &&
+					showLoadMore &&
+					posts?.length >= perPage && (
+						<div className="wp-block-post-archive__load-more-wrap">
+							<button
+								type="button"
+								className="wp-block-post-archive__load-more"
+								onClick={ ( event ) => event.preventDefault() }
+							>
+								{ loadMoreLabel }
+							</button>
+						</div>
+					) }
 			</div>
 		</>
 	);

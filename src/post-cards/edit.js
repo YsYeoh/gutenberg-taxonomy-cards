@@ -240,7 +240,7 @@ export default function Edit( { attributes, setAttributes } ) {
 							setAttributes( { columns: value } )
 						}
 						min={ 2 }
-						max={ 4 }
+						max={ 6 }
 					/>
 					<RangeControl
 						label={ __( 'Gap (px)', 'gutenberg-taxonomy-cards' ) }
