@@ -4,7 +4,7 @@ Tags: gutenberg, block, taxonomy, posts, cards
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -19,7 +19,7 @@ Gutenberg Taxonomy Cards adds six blocks to the block editor, all fetching data 
 A responsive grid of **all** terms in a taxonomy you pick (post type → taxonomy). Each card shows an image, name, description, and item count, and links to the term's archive. This is the richest block in the set:
 
 * **Source** — post type, then taxonomy (only taxonomies registered for the chosen post type are offered)
-* **Layout** — number of columns (2–4), gap between cards
+* **Layout** — number of columns (2–6), gap between cards
 * **Content** — show/hide image, description, item count, and an optional "View archive" text link inside the card (off by default, since the whole card is already clickable)
 * **Query** — hide empty categories, order by name/item count/ID, ascending or descending
 * **Style** — card corner radius, image aspect ratio, image fit (cover/contain), and hover animation (Lift/Zoom/Grow/Fade/None)
@@ -103,6 +103,9 @@ Yes, as long as your site already allows SVG uploads to the Media Library. WordP
 The WordPress REST API doesn't expose a post count field on user objects, and adding one would require a separate request per author. Each card still links to that author's archive, where the count is visible.
 
 == Changelog ==
+
+= 1.4.1 =
+* Taxonomy Category Cards: raised the "Columns" control's maximum from 4 to 6.
 
 = 1.4.0 =
 * Added four more block styles to Taxonomy Category Cards: Minimal (no image), List (horizontal rows instead of a grid), Circular (centered circular thumbnail), and Featured First (first term spans a larger area).
