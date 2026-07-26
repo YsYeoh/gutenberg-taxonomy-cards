@@ -227,17 +227,34 @@
 			bottom: 0;
 			left: 0;
 			z-index: 1;
-			// Extra headroom above the text: the gradient fades out across
-			// this padding instead of across the text itself, so the title
-			// always sits on the fully-opaque part of the scrim regardless
-			// of how much text a given card has.
-			padding-top: 48px;
-			background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.85) 55%, rgba(0, 0, 0, 0) 100%);
+			// Full inset on all sides (the base airy style zeroes the side and
+			// bottom padding for its flush caption, so the overlay has to set
+			// its own). The tall top value doubles as gradient headroom: the
+			// scrim fades out across this empty space above the text, not
+			// across the title/description themselves, so the copy always sits
+			// on the darker part of the scrim regardless of how much text a
+			// given card has.
+			padding: 56px 20px 20px;
+			// A softer, taller multi-stop fade instead of a hard 55%-opaque
+			// bar — reads as a gentle vignette that lets more of the warm image
+			// through, so it sits better on a warm/light theme. Kept dark
+			// enough at the base for legibility, and the text-shadow below
+			// carries the rest so the scrim itself can stay light.
+			background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.58) 26%, rgba(0, 0, 0, 0.32) 52%, rgba(0, 0, 0, 0.1) 78%, rgba(0, 0, 0, 0) 100%);
 
 			// The scrim is always dark, so overlaid text needs to stay light
 			// regardless of the theme's resolved text color; per-element Text
 			// Style color overrides still win since they're inline styles.
+			// The shadow keeps the lighter scrim legible over bright images.
 			color: #fff;
+			text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+		}
+
+		// De-emphasized meta stays readable on the scrim rather than fading
+		// into it (the base 0.6 opacity is tuned for text on a page, not on a
+		// dark image).
+		.#{$prefix}__count {
+			opacity: 0.85;
 		}
 	}
 }
