@@ -9,6 +9,16 @@
 
 const BLOCK_SELECTOR = '.wp-block-gutenberg-taxonomy-cards-featured-category';
 
+// The REST API returns term name/description HTML-encoded (e.g. an ampersand
+// comes back as "&amp;"), so setting textContent directly would print the raw
+// entity. Round-tripping through innerHTML/textContent decodes the entities
+// (and strips any tags) — safe here because it's the site's own REST content.
+function stripHtml( html ) {
+	const div = document.createElement( 'div' );
+	div.innerHTML = html;
+	return div.textContent || '';
+}
+
 function renderMessage( el, message ) {
 	el.textContent = '';
 	const p = document.createElement( 'p' );
@@ -47,7 +57,7 @@ function renderCard( category, el ) {
 
 	const title = document.createElement( 'h3' );
 	title.className = 'wp-block-featured-category__title';
-	title.textContent = category.name;
+	title.textContent = stripHtml( category.name );
 	if ( el.dataset.titleFontSize ) {
 		title.style.fontSize = `${ el.dataset.titleFontSize }px`;
 	}
@@ -59,7 +69,7 @@ function renderCard( category, el ) {
 	if ( showDescription && category.description ) {
 		const description = document.createElement( 'p' );
 		description.className = 'wp-block-featured-category__description';
-		description.textContent = category.description;
+		description.textContent = stripHtml( category.description );
 		if ( el.dataset.descriptionFontSize ) {
 			description.style.fontSize = `${ el.dataset.descriptionFontSize }px`;
 		}

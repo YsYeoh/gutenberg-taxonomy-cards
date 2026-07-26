@@ -107,7 +107,7 @@ Same reasoning as the color-support cascade above: native `border`/`color` block
 
 ### Data shape (taxonomy terms)
 
-Each REST API taxonomy term looks like this (relevant to `taxonomy-category-cards`, `featured-category`, `category-pills`). `z_taxonomy_image_url` is not a WordPress core field — it's specific to whatever plugin registered the taxonomy (originally observed on a recipe plugin's `recipe_category` taxonomy). Since these blocks work with arbitrary taxonomies, this field is usually absent, and that's expected — both `edit.js` and `view.js` treat it as optional and fall back to the placeholder image box.
+Each REST API taxonomy term looks like this (relevant to `taxonomy-category-cards`, `featured-category`, `category-pills`). The `name` and `description` fields come back **HTML-entity-encoded** (an ampersand is `&amp;`, etc.), so all three blocks run them through a `stripHtml()` helper (the `innerHTML` → `textContent` round-trip, which decodes entities and strips any tags — the same helper `post-cards`/`featured-post` use on post titles) in **both** `view.js` and `edit.js` before rendering; assigning the raw value to `textContent`/JSX would print the literal `&amp;`. `z_taxonomy_image_url` is not a WordPress core field — it's specific to whatever plugin registered the taxonomy (originally observed on a recipe plugin's `recipe_category` taxonomy). Since these blocks work with arbitrary taxonomies, this field is usually absent, and that's expected — both `edit.js` and `view.js` treat it as optional and fall back to the placeholder image box.
 
 ```ts
 interface TaxonomyTerm {

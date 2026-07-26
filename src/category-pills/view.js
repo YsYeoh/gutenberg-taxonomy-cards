@@ -9,6 +9,16 @@
 
 const BLOCK_SELECTOR = '.wp-block-gutenberg-taxonomy-cards-category-pills';
 
+// The REST API returns term names HTML-encoded (e.g. an ampersand comes back
+// as "&amp;"), so using the raw string as text would print the raw entity.
+// Round-tripping through innerHTML/textContent decodes the entities (and
+// strips any tags) — safe here because it's the site's own REST content.
+function stripHtml( html ) {
+	const div = document.createElement( 'div' );
+	div.innerHTML = html;
+	return div.textContent || '';
+}
+
 function buildQuery( el ) {
 	const params = new URLSearchParams( {
 		per_page: '100',
@@ -38,7 +48,7 @@ function createItem( category, el ) {
 	const pill = document.createElement( 'a' );
 	pill.className = 'wp-block-category-pills__pill';
 	pill.href = category.link;
-	pill.appendChild( document.createTextNode( category.name ) );
+	pill.appendChild( document.createTextNode( stripHtml( category.name ) ) );
 
 	if ( showCount ) {
 		const count = document.createElement( 'span' );

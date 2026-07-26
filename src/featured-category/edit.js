@@ -14,6 +14,14 @@ import {
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
 
+// Decode HTML-encoded term name/description from the REST API (e.g. "&amp;")
+// so the editor preview matches the frontend; see view.js for the rationale.
+function stripHtml( html ) {
+	const div = document.createElement( 'div' );
+	div.innerHTML = html || '';
+	return div.textContent || '';
+}
+
 export default function Edit( { attributes, setAttributes } ) {
 	const {
 		postType,
@@ -538,7 +546,7 @@ export default function Edit( { attributes, setAttributes } ) {
 									color: titleColor || undefined,
 								} }
 							>
-								{ category.name }
+								{ stripHtml( category.name ) }
 							</h3>
 							{ showDescription && category.description && (
 								<p
@@ -550,7 +558,7 @@ export default function Edit( { attributes, setAttributes } ) {
 										color: descriptionColor || undefined,
 									} }
 								>
-									{ category.description }
+									{ stripHtml( category.description ) }
 								</p>
 							) }
 							{ showCount && (

@@ -22,6 +22,17 @@ function buildQuery( el ) {
 	return params.toString();
 }
 
+// The REST API returns term name/description HTML-encoded (e.g. an ampersand
+// comes back as "&amp;"), so setting textContent directly would print the raw
+// entity. Round-tripping through innerHTML/textContent decodes the entities
+// (and strips any tags) — the same trick post-cards uses on its titles, safe
+// here because it's the site's own already-sanitized REST content.
+function stripHtml( html ) {
+	const div = document.createElement( 'div' );
+	div.innerHTML = html;
+	return div.textContent || '';
+}
+
 function parseJSONMap( value ) {
 	try {
 		return JSON.parse( value || '{}' );
@@ -75,7 +86,7 @@ function createCard( category, el, icons, borderColors, animations ) {
 
 	const title = document.createElement( 'h3' );
 	title.className = 'wp-block-taxonomy-category-cards__title';
-	title.textContent = category.name;
+	title.textContent = stripHtml( category.name );
 	if ( el.dataset.titleFontSize ) {
 		title.style.fontSize = `${ el.dataset.titleFontSize }px`;
 	}
@@ -87,7 +98,7 @@ function createCard( category, el, icons, borderColors, animations ) {
 	if ( showDescription && category.description ) {
 		const description = document.createElement( 'p' );
 		description.className = 'wp-block-taxonomy-category-cards__description';
-		description.textContent = category.description;
+		description.textContent = stripHtml( category.description );
 		if ( el.dataset.descriptionFontSize ) {
 			description.style.fontSize = `${ el.dataset.descriptionFontSize }px`;
 		}

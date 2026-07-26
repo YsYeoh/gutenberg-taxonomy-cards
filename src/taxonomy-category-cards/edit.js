@@ -17,6 +17,16 @@ import {
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
 
+// The REST API returns term name/description HTML-encoded (e.g. an ampersand
+// comes back as "&amp;"); rendering that string directly would print the raw
+// entity. Decode it (and strip any tags) the same way view.js and post-cards
+// do, so the editor preview matches the frontend.
+function stripHtml( html ) {
+	const div = document.createElement( 'div' );
+	div.innerHTML = html || '';
+	return div.textContent || '';
+}
+
 export default function Edit( { attributes, setAttributes } ) {
 	const {
 		postType,
@@ -623,10 +633,12 @@ export default function Edit( { attributes, setAttributes } ) {
 													size="small"
 												>
 													{ icon?.url
-														? category.name
-														: `${
+														? stripHtml(
 																category.name
-														  } — ${ __(
+														  )
+														: `${ stripHtml(
+																category.name
+														  ) } — ${ __(
 																'Select icon',
 																'gutenberg-taxonomy-cards'
 														  ) }` }
@@ -685,7 +697,7 @@ export default function Edit( { attributes, setAttributes } ) {
 										margin: '0 0 4px',
 									} }
 								>
-									{ category.name }
+									{ stripHtml( category.name ) }
 								</p>
 								<ColorPalette
 									colors={ colors }
@@ -816,7 +828,7 @@ export default function Edit( { attributes, setAttributes } ) {
 											color: titleColor || undefined,
 										} }
 									>
-										{ category.name }
+										{ stripHtml( category.name ) }
 									</h3>
 									{ showDescription &&
 										category.description && (
@@ -832,7 +844,9 @@ export default function Edit( { attributes, setAttributes } ) {
 														undefined,
 												} }
 											>
-												{ category.description }
+												{ stripHtml(
+													category.description
+												) }
 											</p>
 										) }
 									{ showCount && (

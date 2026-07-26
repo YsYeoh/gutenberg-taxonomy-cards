@@ -14,6 +14,14 @@ import {
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
 
+// Decode HTML-encoded term names from the REST API (e.g. "&amp;") so the
+// editor preview matches the frontend; see view.js for the rationale.
+function stripHtml( html ) {
+	const div = document.createElement( 'div' );
+	div.innerHTML = html || '';
+	return div.textContent || '';
+}
+
 export default function Edit( { attributes, setAttributes } ) {
 	const {
 		postType,
@@ -320,7 +328,7 @@ export default function Edit( { attributes, setAttributes } ) {
 									}
 									className="wp-block-category-pills__pill"
 								>
-									{ category.name }
+									{ stripHtml( category.name ) }
 									{ showCount && (
 										<span className="wp-block-category-pills__count">
 											{ sprintf(
