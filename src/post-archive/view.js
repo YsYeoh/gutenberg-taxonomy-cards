@@ -4,8 +4,9 @@
  * save.js only outputs a static placeholder (no PHP rendering, so no
  * server-fetched data can be baked in). This script fetches the taxonomy's
  * terms as a category menu and the post grid, then wires the menu, search
- * box, and "Load more" button so they filter/extend the grid in place —
- * no page reload. All state (selected term, search text, current page,
+ * box, and pagination (a "Load more" button or a numbered pager) so they
+ * filter/page the grid in place — no page reload. All state (selected term,
+ * search text, current page,
  * total pages) lives in this function's closures, scoped per block
  * instance, so multiple Post Archive blocks on the same page don't
  * interfere with each other.
@@ -202,15 +203,101 @@ async function hydrate( el ) {
 	const grid = document.createElement( 'div' );
 	grid.className = 'wp-block-post-archive__grid';
 
-	const showLoadMore = el.dataset.showLoadMore === 'true';
+	const paginationEnabled = el.dataset.showLoadMore === 'true';
+	const paginationMode = el.dataset.paginationMode || 'load-more';
+	const isNumbered = paginationEnabled && paginationMode === 'numbered';
 	let loadMoreWrap = null;
 	let loadMoreButton = null;
+	let pagerNav = null;
 
 	function updateLoadMoreVisibility() {
 		if ( ! loadMoreWrap ) {
 			return;
 		}
 		loadMoreWrap.hidden = currentPage >= totalPages;
+	}
+
+	// Compact page-number window: always the first and last page plus the
+	// current page and its immediate neighbours, with an ellipsis marker
+	// standing in for any gap, so a 40-page archive shows ~7 controls, not 40.
+	function getPageList( current, total ) {
+		const pages = [];
+		for ( let n = 1; n <= total; n++ ) {
+			if (
+				n === 1 ||
+				n === total ||
+				( n >= current - 1 && n <= current + 1 )
+			) {
+				pages.push( n );
+			} else if ( pages[ pages.length - 1 ] !== '…' ) {
+				pages.push( '…' );
+			}
+		}
+		return pages;
+	}
+
+	function renderPager() {
+		if ( ! pagerNav ) {
+			return;
+		}
+		pagerNav.textContent = '';
+		pagerNav.hidden = totalPages <= 1;
+		if ( totalPages <= 1 ) {
+			return;
+		}
+
+		const addButton = ( label, { page, active, disabled, nav } ) => {
+			const button = document.createElement( 'button' );
+			button.type = 'button';
+			button.className = `wp-block-post-archive__page${
+				active ? ' is-active' : ''
+			}${ nav ? ' is-nav' : '' }`;
+			button.textContent = label;
+			if ( active ) {
+				button.setAttribute( 'aria-current', 'page' );
+			}
+			if ( disabled ) {
+				button.disabled = true;
+			} else {
+				button.addEventListener( 'click', () => goToPage( page ) );
+			}
+			pagerNav.appendChild( button );
+		};
+
+		addButton( '‹', {
+			page: currentPage - 1,
+			disabled: currentPage <= 1,
+			nav: true,
+		} );
+		getPageList( currentPage, totalPages ).forEach( ( entry ) => {
+			if ( entry === '…' ) {
+				const gap = document.createElement( 'span' );
+				gap.className = 'wp-block-post-archive__page-ellipsis';
+				gap.textContent = '…';
+				pagerNav.appendChild( gap );
+			} else {
+				addButton( String( entry ), {
+					page: entry,
+					active: entry === currentPage,
+				} );
+			}
+		} );
+		addButton( '›', {
+			page: currentPage + 1,
+			disabled: currentPage >= totalPages,
+			nav: true,
+		} );
+	}
+
+	// Numbered mode only: jump to a specific page, replace the grid, and
+	// bring the block back into view so the reader isn't left mid-scroll.
+	function goToPage( page ) {
+		if ( page < 1 || page > totalPages || page === currentPage ) {
+			return;
+		}
+		fetchAndReplace( page ).then( () => {
+			el.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+		} );
 	}
 
 	function buildQuery( page ) {
@@ -230,10 +317,11 @@ async function hydrate( el ) {
 		return params.toString();
 	}
 
-	// Replaces the grid entirely — used on first load and whenever the
-	// category or search filter changes, always resetting back to page 1.
-	async function fetchAndReplace() {
-		currentPage = 1;
+	// Replaces the grid entirely — used on first load, whenever the category
+	// or search filter changes (resets to page 1), and for numbered-page
+	// jumps (goToPage passes the target page).
+	async function fetchAndReplace( page = 1 ) {
+		currentPage = page;
 		renderGridMessage( grid, 'Loading posts…' );
 		if ( loadMoreWrap ) {
 			loadMoreWrap.hidden = true;
@@ -241,7 +329,7 @@ async function hydrate( el ) {
 
 		try {
 			const response = await fetch(
-				`/wp-json/wp/v2/${ restBase }?${ buildQuery( 1 ) }`
+				`/wp-json/wp/v2/${ restBase }?${ buildQuery( page ) }`
 			);
 			if ( ! response.ok ) {
 				throw new Error(
@@ -257,6 +345,9 @@ async function hydrate( el ) {
 
 			if ( ! Array.isArray( posts ) || posts.length === 0 ) {
 				renderGridMessage( grid, 'No posts found.' );
+				if ( pagerNav ) {
+					pagerNav.hidden = true;
+				}
 				return;
 			}
 
@@ -266,8 +357,12 @@ async function hydrate( el ) {
 				grid.appendChild( createCard( post, el ) )
 			);
 			updateLoadMoreVisibility();
+			renderPager();
 		} catch ( error ) {
 			renderGridMessage( grid, 'Unable to load posts.' );
+			if ( pagerNav ) {
+				pagerNav.hidden = true;
+			}
 		}
 	}
 
@@ -354,7 +449,16 @@ async function hydrate( el ) {
 
 	el.appendChild( grid );
 
-	if ( showLoadMore ) {
+	if ( isNumbered ) {
+		// Numbered pages: each click replaces the grid with that page, so the
+		// pager rebuilds after every fetch (renderPager) rather than just
+		// toggling one button's visibility the way "Load more" does.
+		pagerNav = document.createElement( 'nav' );
+		pagerNav.className = 'wp-block-post-archive__pagination';
+		pagerNav.setAttribute( 'aria-label', 'Posts' );
+		pagerNav.hidden = true;
+		el.appendChild( pagerNav );
+	} else if ( paginationEnabled ) {
 		loadMoreWrap = document.createElement( 'div' );
 		loadMoreWrap.className = 'wp-block-post-archive__load-more-wrap';
 		loadMoreWrap.hidden = true;

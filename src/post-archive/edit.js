@@ -41,6 +41,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		showSearch,
 		searchPlaceholder,
 		showLoadMore,
+		paginationMode,
 		loadMoreLabel,
 		perPage,
 		columns,
@@ -528,11 +529,11 @@ export default function Edit( { attributes, setAttributes } ) {
 					/>
 					<ToggleControl
 						label={ __(
-							'Show "Load more" button',
+							'Show pagination',
 							'gutenberg-taxonomy-cards'
 						) }
 						help={ __(
-							'Fetches and appends the next page of results in place, with no page reload.',
+							'Adds a control to page through results in place, with no page reload.',
 							'gutenberg-taxonomy-cards'
 						) }
 						checked={ showLoadMore }
@@ -541,6 +542,34 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 					/>
 					{ showLoadMore && (
+						<SelectControl
+							label={ __(
+								'Pagination style',
+								'gutenberg-taxonomy-cards'
+							) }
+							value={ paginationMode }
+							options={ [
+								{
+									label: __(
+										'"Load more" button',
+										'gutenberg-taxonomy-cards'
+									),
+									value: 'load-more',
+								},
+								{
+									label: __(
+										'Numbered pages',
+										'gutenberg-taxonomy-cards'
+									),
+									value: 'numbered',
+								},
+							] }
+							onChange={ ( value ) =>
+								setAttributes( { paginationMode: value } )
+							}
+						/>
+					) }
+					{ showLoadMore && paginationMode === 'load-more' && (
 						<TextControl
 							label={ __(
 								'Button label',
@@ -965,6 +994,7 @@ export default function Edit( { attributes, setAttributes } ) {
 				{ postType &&
 					hasResolved &&
 					showLoadMore &&
+					paginationMode === 'load-more' &&
 					posts?.length >= perPage && (
 						<div className="wp-block-post-archive__load-more-wrap">
 							<button
@@ -975,6 +1005,52 @@ export default function Edit( { attributes, setAttributes } ) {
 								{ loadMoreLabel }
 							</button>
 						</div>
+					) }
+				{ /* Static numbered-pager preview; real paging runs against the
+				     REST API on the frontend (the editor's getEntityRecords
+				     doesn't expose X-WP-TotalPages), matching the no-op
+				     "Load more" preview convention above. */ }
+				{ postType &&
+					hasResolved &&
+					showLoadMore &&
+					paginationMode === 'numbered' &&
+					posts?.length >= perPage && (
+						<nav
+							className="wp-block-post-archive__pagination"
+							aria-label={ __(
+								'Posts',
+								'gutenberg-taxonomy-cards'
+							) }
+						>
+							<button
+								type="button"
+								className="wp-block-post-archive__page is-nav"
+								disabled
+							>
+								‹
+							</button>
+							{ [ 1, 2, 3 ].map( ( n ) => (
+								<button
+									key={ n }
+									type="button"
+									className={ `wp-block-post-archive__page${
+										n === 1 ? ' is-active' : ''
+									}` }
+									onClick={ ( event ) =>
+										event.preventDefault()
+									}
+								>
+									{ n }
+								</button>
+							) ) }
+							<button
+								type="button"
+								className="wp-block-post-archive__page is-nav"
+								onClick={ ( event ) => event.preventDefault() }
+							>
+								›
+							</button>
+						</nav>
 					) }
 			</div>
 		</>

@@ -28,6 +28,7 @@
     "showSearch": { "type": "boolean", "default": true },
     "searchPlaceholder": { "type": "string", "default": "Search…" },
     "showLoadMore": { "type": "boolean", "default": true },
+    "paginationMode": { "type": "string", "default": "load-more" },
     "loadMoreLabel": { "type": "string", "default": "Load more" },
     "perPage": { "type": "number", "default": 9 },
     "columns": { "type": "number", "default": 3 },
