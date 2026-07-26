@@ -58,7 +58,16 @@ export default function Edit( { attributes, setAttributes } ) {
 		iconPosition,
 		categoryBorderColors,
 		categoryAnimations,
+		fillRowsLayout,
+		className,
 	} = attributes;
+
+	// The Fill Rows block style is stored in the core `className` attribute as
+	// `is-style-fill-rows`; the odd-last-card layout control below only makes
+	// sense while that style is active.
+	const isFillRows = ( className || '' )
+		.split( ' ' )
+		.includes( 'is-style-fill-rows' );
 
 	const colors = useSetting( 'color.palette' ) || [];
 
@@ -157,6 +166,9 @@ export default function Edit( { attributes, setAttributes } ) {
 	};
 
 	const blockProps = useBlockProps( {
+		// Mirror save.js's Fill Rows modifier class so the editor preview
+		// matches the frontend (only meaningful under is-style-fill-rows).
+		className: fillRowsLayout === 'full' ? 'is-fill-full' : undefined,
 		style: {
 			'--rcc-columns': columns,
 			'--rcc-gap': `${ gap }px`,
@@ -231,6 +243,38 @@ export default function Edit( { attributes, setAttributes } ) {
 						min={ 0 }
 						max={ 64 }
 					/>
+					{ isFillRows && (
+						<SelectControl
+							label={ __(
+								'Odd last card',
+								'gutenberg-taxonomy-cards'
+							) }
+							help={ __(
+								'How the lone last card fills the row when the category count is odd (Fill Rows style).',
+								'gutenberg-taxonomy-cards'
+							) }
+							value={ fillRowsLayout }
+							options={ [
+								{
+									label: __(
+										'Horizontal banner',
+										'gutenberg-taxonomy-cards'
+									),
+									value: 'banner',
+								},
+								{
+									label: __(
+										'Full-width card',
+										'gutenberg-taxonomy-cards'
+									),
+									value: 'full',
+								},
+							] }
+							onChange={ ( value ) =>
+								setAttributes( { fillRowsLayout: value } )
+							}
+						/>
+					) }
 				</PanelBody>
 				<PanelBody
 					title={ __( 'Content', 'gutenberg-taxonomy-cards' ) }

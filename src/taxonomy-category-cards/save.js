@@ -31,9 +31,14 @@ export default function save( { attributes } ) {
 		iconPosition,
 		categoryBorderColors,
 		categoryAnimations,
+		fillRowsLayout,
 	} = attributes;
 
 	const blockProps = useBlockProps.save( {
+		// Modifier class for the Fill Rows style's odd last card (only has an
+		// effect under is-style-fill-rows). 'banner' is the CSS default, so
+		// only the 'full' variant needs a class.
+		className: fillRowsLayout === 'full' ? 'is-fill-full' : undefined,
 		style: {
 			'--rcc-columns': columns,
 			'--rcc-gap': `${ gap }px`,

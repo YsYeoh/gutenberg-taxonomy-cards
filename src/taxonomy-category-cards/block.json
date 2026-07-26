@@ -39,7 +39,8 @@
     "hoverAnimation": { "type": "string", "default": "lift" },
     "iconPosition": { "type": "string", "default": "bottom-left" },
     "categoryBorderColors": { "type": "object", "default": {} },
-    "categoryAnimations": { "type": "object", "default": {} }
+    "categoryAnimations": { "type": "object", "default": {} },
+    "fillRowsLayout": { "type": "string", "default": "banner" }
   },
   "styles": [
     { "name": "default", "label": "Default", "isDefault": true },

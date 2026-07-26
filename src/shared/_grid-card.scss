@@ -464,6 +464,28 @@
 			}
 		}
 	}
+
+	// Opt-in variant of Fill Rows (fillRowsLayout = 'full', serialized as the
+	// `is-fill-full` class on the wrapper): the odd last card still spans the
+	// full row, but as a normal vertical card (full-width image on top) — a
+	// bigger, hero-style last item — instead of the default horizontal banner.
+	// The extra class raises specificity so it wins over the banner rules
+	// above at every breakpoint, including the phone media query.
+	&.is-style-fill-rows.is-fill-full {
+		.#{$prefix}__grid > .#{$prefix}__card:last-child:nth-child(odd) {
+			flex-direction: column;
+			gap: 0;
+
+			.#{$prefix}__image {
+				flex: none;
+			}
+
+			.#{$prefix}__content {
+				justify-content: flex-start;
+				padding: 14px 0 0;
+			}
+		}
+	}
 }
 
 @mixin editor-reset($prefix) {
