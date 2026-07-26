@@ -8,6 +8,7 @@
 	@include gtc.list-style("wp-block-taxonomy-category-cards");
 	@include gtc.circular-style("wp-block-taxonomy-category-cards");
 	@include gtc.featured-first-style("wp-block-taxonomy-category-cards");
+	@include gtc.fill-rows-style("wp-block-taxonomy-category-cards");
 
 	// The shared card is borderless and its caption is flush to the image
 	// edges by default. When the "Card background" swatch is set, the block

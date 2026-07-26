@@ -47,7 +47,8 @@
     { "name": "minimal", "label": "Minimal" },
     { "name": "list", "label": "List" },
     { "name": "circular", "label": "Circular" },
-    { "name": "featured-first", "label": "Featured First" }
+    { "name": "featured-first", "label": "Featured First" },
+    { "name": "fill-rows", "label": "Fill Rows" }
   ],
   "supports": {
     "html": false,

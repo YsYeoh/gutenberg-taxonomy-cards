@@ -395,6 +395,66 @@
 	}
 }
 
+// Paired two-column layout that never leaves an orphan cell. Cards flow in
+// rows of two; when the total is odd, the final card has no partner, so
+// instead of sitting beside an empty cell it spans the full row as a
+// horizontal banner (image beside vertically-centred text). Handles any odd
+// count — 5 → 2+2+1 (the "1" is a full-width banner), 3 → 2+1, 1 → a single
+// full-width banner — while even counts stay a clean 2-up grid. The banner
+// treatment (rather than just letting a vertical card stretch full-width)
+// keeps the image from blowing up into a giant square across the whole row.
+@mixin fill-rows-style($prefix) {
+
+	&.is-style-fill-rows {
+		.#{$prefix}__grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		// `:last-child:nth-child(odd)` matches the final card only when the
+		// item count is odd (its 1-based position is odd), i.e. exactly when
+		// it would otherwise be orphaned next to an empty cell.
+		.#{$prefix}__grid > .#{$prefix}__card:last-child:nth-child(odd) {
+			grid-column: 1 / -1;
+			flex-direction: row;
+			align-items: center;
+			gap: 24px;
+
+			.#{$prefix}__image {
+				flex: 0 0 50%;
+			}
+
+			.#{$prefix}__content {
+				flex: 1;
+				justify-content: center;
+				// The base flush caption has no side padding; the row gap
+				// above is what now keeps the text off the image edge.
+				padding: 0;
+			}
+		}
+
+		// At the narrowest width the grid is a single column, so there's no
+		// orphan to fill — revert the banner to a normal stacked card.
+		@media (max-width: 480px) {
+			.#{$prefix}__grid {
+				grid-template-columns: 1fr;
+			}
+
+			.#{$prefix}__grid > .#{$prefix}__card:last-child:nth-child(odd) {
+				flex-direction: column;
+				gap: 0;
+
+				.#{$prefix}__image {
+					flex-basis: auto;
+				}
+
+				.#{$prefix}__content {
+					padding: 14px 0 0;
+				}
+			}
+		}
+	}
+}
+
 @mixin editor-reset($prefix) {
 	.#{$prefix}__card {
 
