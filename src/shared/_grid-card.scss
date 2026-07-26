@@ -31,6 +31,21 @@
 	// still paints the container as before.
 	color: #1e1e1e;
 	background-color: transparent;
+
+	// Full-/wide-aligned blocks run edge to edge, so on phones the cards would
+	// otherwise touch the screen sides. Inset them a little. Scoped to the
+	// alignment classes (not every instance) so a normal in-flow block that
+	// the theme already pads doesn't get double-indented, and to phones only.
+	// The block's own Spacing (padding) support serializes inline and still
+	// overrides this, so an editor who wants true edge-to-edge can set it.
+	@media (max-width: 480px) {
+
+		&.alignfull,
+		&.alignwide {
+			padding-right: 16px;
+			padding-left: 16px;
+		}
+	}
 }
 
 @mixin grid-card($prefix) {
@@ -39,12 +54,16 @@
 		grid-template-columns: repeat(var(--rcc-columns, 4), 1fr);
 		gap: var(--rcc-gap, 24px);
 
+		// Stay two-up on phones rather than collapsing to a single column — a
+		// lone full-width card reads too large for a category/post tile — just
+		// with a tighter gap so two columns fit comfortably on a narrow screen.
 		@media (max-width: 782px) {
 			grid-template-columns: repeat(2, 1fr);
 		}
 
 		@media (max-width: 480px) {
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 16px;
 		}
 	}
 
@@ -432,23 +451,15 @@
 			}
 		}
 
-		// At the narrowest width the grid is a single column, so there's no
-		// orphan to fill — revert the banner to a normal stacked card.
+		// On phones the grid stays two-up (the base grid keeps 2 columns
+		// there now), so the odd card still spans the full width as a banner —
+		// just tighten the split so the narrow text column has more room.
 		@media (max-width: 480px) {
-			.#{$prefix}__grid {
-				grid-template-columns: 1fr;
-			}
-
 			.#{$prefix}__grid > .#{$prefix}__card:last-child:nth-child(odd) {
-				flex-direction: column;
-				gap: 0;
+				gap: 16px;
 
 				.#{$prefix}__image {
-					flex-basis: auto;
-				}
-
-				.#{$prefix}__content {
-					padding: 14px 0 0;
+					flex-basis: 40%;
 				}
 			}
 		}
