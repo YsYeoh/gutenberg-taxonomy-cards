@@ -8,6 +8,15 @@
 	@include gtc.list-style("wp-block-taxonomy-category-cards");
 	@include gtc.circular-style("wp-block-taxonomy-category-cards");
 	@include gtc.featured-first-style("wp-block-taxonomy-category-cards");
+
+	// The shared card is borderless and its caption is flush to the image
+	// edges by default. When the "Card background" swatch is set, the block
+	// serializes a `--rcc-card-bg` custom property inline on this wrapper — so
+	// use its presence to switch the caption back to an even inset, keeping
+	// the fill from crowding the text on a genuinely boxed card.
+	&[style*="--rcc-card-bg"] .wp-block-taxonomy-category-cards__content {
+		padding: 16px;
+	}
 }
 
 @include gtc.grid-card("wp-block-taxonomy-category-cards");

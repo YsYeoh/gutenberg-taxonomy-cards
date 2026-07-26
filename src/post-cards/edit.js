@@ -659,6 +659,21 @@ export default function Edit( { attributes, setAttributes } ) {
 										/>
 									) }
 									<div className="wp-block-post-cards__content">
+										{ /* Date/author kicker above the title, per the editorial meta styling. */ }
+										{ !! metaParts.length && (
+											<span
+												className="wp-block-post-cards__count"
+												style={ {
+													fontSize: metaFontSize
+														? `${ metaFontSize }px`
+														: undefined,
+													color:
+														metaColor || undefined,
+												} }
+											>
+												{ metaParts.join( ' · ' ) }
+											</span>
+										) }
 										<h3
 											className="wp-block-post-cards__title"
 											style={ {
@@ -691,20 +706,6 @@ export default function Edit( { attributes, setAttributes } ) {
 													) }
 												</p>
 											) }
-										{ !! metaParts.length && (
-											<span
-												className="wp-block-post-cards__count"
-												style={ {
-													fontSize: metaFontSize
-														? `${ metaFontSize }px`
-														: undefined,
-													color:
-														metaColor || undefined,
-												} }
-											>
-												{ metaParts.join( ' · ' ) }
-											</span>
-										) }
 										{ showCta && (
 											<span className="wp-block-post-cards__cta">
 												{ __(

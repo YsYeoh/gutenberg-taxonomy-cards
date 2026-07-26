@@ -20,12 +20,17 @@
 	box-sizing: border-box;
 	width: 100%;
 
-	// Fallback color/background when no Color support values are set in the
-	// editor. Both are real (non-inline) declarations on this same element,
-	// so if the block's Color panel is used, Gutenberg's inline style on this
-	// wrapper overrides them here; cards below then inherit whichever wins.
+	// Fallback text color when no Color support value is set in the editor.
+	// A real (non-inline) declaration on this same element, so if the block's
+	// Color panel is used, Gutenberg's inline style on this wrapper overrides
+	// it here; cards below then inherit whichever wins.
+	// Background defaults to transparent (not a white slab) so the cards sit
+	// directly on the theme's own page background — the "airy/editorial" look
+	// most themes use for a post/category grid — instead of a white rectangle
+	// that clashes with a tinted theme. Setting the Color panel's background
+	// still paints the container as before.
 	color: #1e1e1e;
-	background-color: #fff;
+	background-color: transparent;
 }
 
 @mixin grid-card($prefix) {
@@ -49,12 +54,22 @@
 		background-size: var(--rcc-image-fit, cover);
 		background-position: center;
 		background-repeat: no-repeat;
-		border-radius: var(--rcc-radius, 16px) var(--rcc-radius, 16px) 0 0;
+		// Fully rounded on all four corners (not just the top). With the card
+		// itself now transparent/borderless by default, the image reads as a
+		// self-contained rounded tile floating on the page — the editorial
+		// look themes use — rather than the top of a boxed card. The boxed
+		// styles that need square-bottom corners (overlay) or side-only
+		// rounding (list / horizontal featured layouts) still override this.
+		border-radius: var(--rcc-radius, 16px);
 		transition: transform 0.3s ease;
 		overflow: hidden;
 
+		// Theme-neutral tint for terms/posts with no image, instead of a fixed
+		// cool gray that clashes on a warm/tinted theme. currentColor at low
+		// opacity would be invisible on a matching background, so a faint black
+		// wash is used — subtle on light themes, still visible on dark ones.
 		&.is-placeholder {
-			background-color: #e2e2e2;
+			background-color: rgba(0, 0, 0, 0.08);
 		}
 	}
 
@@ -99,8 +114,13 @@
 		border:
 			var(--rcc-border-width, 0) var(--rcc-border-style, solid)
 			var(--rcc-border-color, currentColor);
-		background-color: var(--rcc-card-bg, inherit);
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		// Transparent by default (was `inherit`, which matched the old white
+		// wrapper): the card is now a borderless, shadow-free container so the
+		// rounded image and text sit straight on the theme background. Setting
+		// the "Card background" swatch paints it, and the border/hover controls
+		// still layer chrome on top when a boxed look is wanted.
+		background-color: var(--rcc-card-bg, transparent);
+		box-shadow: none;
 		transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 		text-decoration: none;
 
@@ -136,24 +156,38 @@
 		flex: 1;
 		flex-direction: column;
 		gap: 8px;
-		padding: 16px;
+		// Flush to the image's left/right edges (no side padding) with just a
+		// gap above — the editorial layout where the caption text lines up
+		// under the image, rather than a boxed card's uniform inset. The
+		// taxonomy block restores an even inset when a solid "Card background"
+		// is set (see its style.scss), since the fill would otherwise crowd
+		// the text.
+		padding: 14px 0 0;
 	}
 
 	.#{$prefix}__title {
 		margin: 0;
 		font-size: 1.15em;
+		line-height: 1.3;
 	}
 
 	.#{$prefix}__description {
 		flex: 1;
 		margin: 0;
 		font-size: 0.9em;
+		line-height: 1.55;
 		opacity: 0.75;
 	}
 
+	// Editorial meta line (post date, term count): small, uppercase and
+	// letter-spaced — the "JUNE 5, 2026" kicker look — rather than plain
+	// small text. Colour still inherits so it tracks the theme.
 	.#{$prefix}__count {
-		font-size: 0.85em;
-		opacity: 0.65;
+		font-size: 0.78em;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		opacity: 0.6;
 	}
 
 	.#{$prefix}__cta {
@@ -313,7 +347,7 @@
 		&.is-animation-grow:hover,
 		&.is-animation-fade:hover {
 			transform: none;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			box-shadow: none;
 			opacity: 1;
 
 			.#{$prefix}__image {

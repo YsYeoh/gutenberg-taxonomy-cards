@@ -110,7 +110,10 @@ function createCard( post, el ) {
 		if ( el.dataset.metaColor ) {
 			meta.style.color = el.dataset.metaColor;
 		}
-		content.appendChild( meta );
+		// Place the date/author line above the title as an editorial kicker
+		// (the "JUNE 5, 2026" label sitting over the headline), matching the
+		// uppercase meta styling in the shared card stylesheet.
+		content.insertBefore( meta, title );
 	}
 
 	if ( showCta ) {
