@@ -270,13 +270,31 @@
 		.#{$prefix}__image {
 			display: none;
 		}
+
+		// Without an image the base style's top gap sits above nothing, so
+		// zero it and instead lead each item with a thin editorial rule (the
+		// same theme-neutral hairline used for placeholders) so the text
+		// tiles read as intentional list items rather than floating text.
+		.#{$prefix}__card {
+			border-top: 1px solid rgba(0, 0, 0, 0.12);
+		}
+
+		.#{$prefix}__content {
+			padding-top: 14px;
+		}
+
+		// The name carries the whole item now, so give it a touch more weight.
+		.#{$prefix}__title {
+			font-size: 1.05em;
+			font-weight: 600;
+		}
 	}
 }
 
-// Horizontal rows instead of a grid: thumbnail on the left, text on the
-// right, one term per row. Mirrors the same flex-row treatment featured-post
-// and featured-category already use for their own horizontal layout, just
-// applied to every card in the collection instead of a single one.
+// Horizontal rows instead of a grid: a floating rounded thumbnail on the
+// left, vertically-centered text on the right, one term per row. Mirrors the
+// flex-row treatment featured-post/featured-category use for their own
+// horizontal layout, applied to every card in the collection.
 @mixin list-style($prefix) {
 
 	&.is-style-list {
@@ -287,28 +305,42 @@
 
 		.#{$prefix}__card {
 			flex-direction: row;
+			align-items: center;
 			height: auto;
+			// Space between the thumbnail and the text; the base flush caption
+			// has no side padding, so this gap is what keeps the text off the
+			// image edge now that the card is borderless.
+			gap: 20px;
 		}
 
 		.#{$prefix}__image {
-			flex: 0 0 140px;
-			border-radius: var(--rcc-radius, 16px) 0 0 var(--rcc-radius, 16px);
+			// Responsive thumbnail width, fully rounded so it reads as a
+			// floating tile (the borderless card no longer boxes it in, so the
+			// old left-only rounding would leave two bare square corners).
+			flex: 0 0 clamp(120px, 24%, 190px);
+			aspect-ratio: var(--rcc-ratio, 4 / 3);
+			border-radius: var(--rcc-radius, 16px);
 		}
 
 		.#{$prefix}__content {
 			flex: 1;
+			justify-content: center;
+			padding: 0;
 		}
 
 		@media (max-width: 480px) {
 			.#{$prefix}__card {
 				flex-direction: column;
+				align-items: stretch;
+				gap: 0;
 			}
 
 			.#{$prefix}__image {
 				flex-basis: auto;
-				border-radius:
-					var(--rcc-radius, 16px) var(--rcc-radius, 16px) 0
-					0;
+			}
+
+			.#{$prefix}__content {
+				padding: 14px 0 0;
 			}
 		}
 	}
@@ -322,17 +354,24 @@
 	&.is-style-circular {
 		.#{$prefix}__card {
 			align-items: center;
-			padding-top: 24px;
+			padding-top: 8px;
 			text-align: center;
 		}
 
 		.#{$prefix}__image {
 			flex: none;
-			width: 96px;
-			height: 96px;
+			width: 112px;
+			height: 112px;
 			margin: 0 auto;
 			aspect-ratio: 1;
 			border-radius: 50%;
+		}
+
+		// Centre the caption and give it breathing room under the avatar (the
+		// base flush caption is left-aligned with only a small top gap).
+		.#{$prefix}__content {
+			align-items: center;
+			padding-top: 16px;
 		}
 	}
 }
