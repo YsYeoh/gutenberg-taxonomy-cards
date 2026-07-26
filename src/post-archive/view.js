@@ -99,7 +99,9 @@ function createCard( post, el ) {
 		if ( el.dataset.metaColor ) {
 			meta.style.color = el.dataset.metaColor;
 		}
-		content.appendChild( meta );
+		// Date/author line above the title as an editorial kicker, matching
+		// post-cards and the shared card's uppercase meta styling.
+		content.insertBefore( meta, title );
 	}
 
 	if ( showCta ) {

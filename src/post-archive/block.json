@@ -8,6 +8,13 @@
   "keywords": [ "archive", "browse", "catalog", "filter", "recipes", "products" ],
   "version": "1.0.0",
   "textdomain": "gutenberg-taxonomy-cards",
+  "styles": [
+    { "name": "default", "label": "Default", "isDefault": true },
+    { "name": "overlay", "label": "Overlay" },
+    { "name": "list", "label": "List" },
+    { "name": "minimal", "label": "Minimal" },
+    { "name": "featured-first", "label": "Featured First" }
+  ],
   "attributes": {
     "postType": { "type": "string", "default": "" },
     "postTypeRestBase": { "type": "string", "default": "" },

@@ -901,6 +901,21 @@ export default function Edit( { attributes, setAttributes } ) {
 										/>
 									) }
 									<div className="wp-block-post-archive__content">
+										{ /* Date/author kicker above the title, matching post-cards. */ }
+										{ !! metaParts.length && (
+											<span
+												className="wp-block-post-archive__count"
+												style={ {
+													fontSize: metaFontSize
+														? `${ metaFontSize }px`
+														: undefined,
+													color:
+														metaColor || undefined,
+												} }
+											>
+												{ metaParts.join( ' · ' ) }
+											</span>
+										) }
 										<h3
 											className="wp-block-post-archive__title"
 											style={ {
@@ -933,20 +948,6 @@ export default function Edit( { attributes, setAttributes } ) {
 													) }
 												</p>
 											) }
-										{ !! metaParts.length && (
-											<span
-												className="wp-block-post-archive__count"
-												style={ {
-													fontSize: metaFontSize
-														? `${ metaFontSize }px`
-														: undefined,
-													color:
-														metaColor || undefined,
-												} }
-											>
-												{ metaParts.join( ' · ' ) }
-											</span>
-										) }
 										{ showCta && (
 											<span className="wp-block-post-archive__cta">
 												{ __(

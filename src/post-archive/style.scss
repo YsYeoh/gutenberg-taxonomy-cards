@@ -3,6 +3,16 @@
 .wp-block-gutenberg-taxonomy-cards-post-archive {
 
 	@include gtc.wrapper-defaults;
+
+	// The archive grid is the same shared card grid every other block uses,
+	// so it can adopt the same style variations — registered in block.json's
+	// "styles" and toggled from the editor's Styles panel as `is-style-*` on
+	// this wrapper (view.js/edit.js never touch the wrapper class, so the
+	// selection carries through to both the editor preview and the frontend).
+	@include gtc.overlay-style("wp-block-post-archive");
+	@include gtc.list-style("wp-block-post-archive");
+	@include gtc.minimal-style("wp-block-post-archive");
+	@include gtc.featured-first-style("wp-block-post-archive");
 }
 
 @include gtc.grid-card("wp-block-post-archive");
@@ -27,25 +37,30 @@
 	padding: 8px 18px;
 	border: none;
 	border-radius: var(--rcc-pill-radius, 999px);
-	background-color: var(--rcc-pill-bg, rgba(0, 0, 0, 0.06));
+	// Tints derived from the resolved theme text color (currentcolor) rather
+	// than a fixed gray, so the menu warms up to whatever theme it sits in.
+	// The pillBackgroundColor/pillTextColor attributes still override via the
+	// custom-property fallbacks when an editor sets explicit colors.
+	background-color: var(--rcc-pill-bg, color-mix(in srgb, currentcolor 8%, transparent));
 	color: var(--rcc-pill-color, inherit);
 	font: inherit;
 	font-weight: 600;
 	white-space: nowrap;
 	cursor: pointer;
-	transition: background-color 0.2s ease, color 0.2s ease;
+	transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 
 	&:hover {
-		background-color: var(--rcc-pill-bg-hover, rgba(0, 0, 0, 0.12));
+		background-color: var(--rcc-pill-bg-hover, color-mix(in srgb, currentcolor 15%, transparent));
 	}
 
-	// A fixed, high-contrast pair for the "selected" state — same
-	// reasoning as .is-placeholder's fixed gray elsewhere in this plugin:
-	// it's a UI state indicator, not card content, so it doesn't need to
-	// track the theme's resolved text color the way title/description do.
+	// Selected state: a stronger theme-colored fill plus an inset ring and
+	// bolder label, instead of a fixed dark chip that clashed on a warm
+	// theme. Signals selection through the theme's own color and needs no
+	// text inversion, so it reads correctly on light and dark themes alike.
 	&.is-active {
-		background-color: #1e1e1e;
-		color: #fff;
+		background-color: color-mix(in srgb, currentcolor 16%, transparent);
+		box-shadow: inset 0 0 0 1.5px currentcolor;
+		font-weight: 700;
 	}
 }
 
@@ -55,16 +70,25 @@
 	width: 100%;
 	max-width: 420px;
 	margin: 0 0 16px;
-	padding: 10px 16px;
-	border: 1px solid rgba(0, 0, 0, 0.15);
+	padding: 11px 18px;
+	// Soft, theme-derived field instead of a hard white box on a tinted page:
+	// a faint currentcolor wash with a currentcolor hairline, text inheriting
+	// the theme color. Sits naturally on any background.
+	border: 1px solid color-mix(in srgb, currentcolor 22%, transparent);
 	border-radius: var(--rcc-pill-radius, 999px);
-	background-color: #fff;
-	color: #1e1e1e;
+	background-color: color-mix(in srgb, currentcolor 4%, transparent);
+	color: inherit;
 	font: inherit;
 
+	&::placeholder {
+		color: currentcolor;
+		opacity: 0.5;
+	}
+
 	&:focus {
-		outline: 2px solid currentcolor;
-		outline-offset: 2px;
+		outline: none;
+		border-color: currentcolor;
+		box-shadow: 0 0 0 3px color-mix(in srgb, currentcolor 12%, transparent);
 	}
 }
 
@@ -75,18 +99,19 @@
 }
 
 .wp-block-post-archive__load-more {
-	padding: 10px 24px;
-	border: 1px solid currentcolor;
+	padding: 11px 26px;
+	border: 1px solid color-mix(in srgb, currentcolor 30%, transparent);
 	border-radius: var(--rcc-pill-radius, 999px);
 	background-color: transparent;
 	color: inherit;
 	font: inherit;
 	font-weight: 600;
 	cursor: pointer;
-	transition: background-color 0.2s ease, opacity 0.2s ease;
+	transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 
 	&:hover {
-		background-color: rgba(0, 0, 0, 0.06);
+		border-color: currentcolor;
+		background-color: color-mix(in srgb, currentcolor 8%, transparent);
 	}
 
 	&:disabled {
